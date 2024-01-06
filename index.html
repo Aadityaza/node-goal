@@ -9,19 +9,30 @@
     </style>
 </head>
 <body>
-    <svg width="960" height="600"></svg>
+    <ul>
+        <li style="cursor:pointer">test 1</li>
+        <li style="cursor:pointer">test 1</li>
+        <li style="cursor:pointer">test 1</li>
+        <li style="cursor:pointer">test 1</li>
+        <li style="cursor:pointer">test 1</li>
+        <li style="cursor:pointer">test 1</li>
+        <li style="cursor:pointer">test 1</li>
+    </ul>
+    <div style="border:1px solid black; border-radius:16px">
+    <svg width="500" height="500"></svg>
+    </div>
     <script>
         // D3.js code goes here
-        var svg = d3.select("svg"),
-    width = +svg.attr("width"),
+    let svg = d3.select("svg"),
+     width = +svg.attr("width"),
     height = +svg.attr("height");
 
 var nodes = [
-    {id: 1}, {id: 2}, {id: 3}, {id: 4}
+    {id: 1}, {id: 2}, {id: 3}, {id: 4}, {id: 5}
 ];
 
 var links = [
-    {source: 1, target: 2}, {source: 1, target: 3}, {source: 2, target: 4}
+    {source: 1, target: 2}, {source: 1, target: 3}, {source: 2, target: 4}, {source:2, target:5}
 ];
 
 var simulation = d3.forceSimulation(nodes)
@@ -29,24 +40,26 @@ var simulation = d3.forceSimulation(nodes)
     .force("charge", d3.forceManyBody())
     .force("center", d3.forceCenter(width / 2, height / 2));
 
+    
+var node = svg.append("g")
+    .attr("class", "nodes")
+    .selectAll("circle")
+    .data(nodes)
+    .enter().append("circle")
+    .attr("class", "node")
+    // Todo - Add logic to increment size according to number of connection 
+    .attr("r", 5)
+    .call(d3.drag()
+        .on("start", dragstarted)
+        .on("drag", dragged)
+        .on("end", dragended));
+
 var link = svg.append("g")
     .attr("class", "links")
     .selectAll("line")
     .data(links)
     .enter().append("line")
     .attr("class", "link");
-
-var node = svg.append("g")
-    .attr("class", "nodes")
-    .selectAll("rect")
-    .data(nodes)
-    .enter().append("circle")
-    .attr("class", "node")
-    .attr("r", 5)
-    .call(d3.drag()
-        .on("start", dragstarted)
-        .on("drag", dragged)
-        .on("end", dragended));
 
 simulation.on("tick", () => {
     link
