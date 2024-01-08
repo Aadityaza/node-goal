@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Node</title>
+    <!-- Link to CSS files and any additional head elements -->
+</head>
+<body>
+    <h1>Create a New Node</h1>
+    <form id="nodeForm" action="/create_node" method="post">
+        <label for="nodeTitle">Title:</label>
+        <input type="text" id="nodeTitle" name="title" required>
+
+        <label for="nodeContent">Content:</label>
+        <textarea id="nodeContent" name="content" required></textarea>
+
+        <label for="nodeTags">Tags (comma separated):</label>
+        <input type="text" id="nodeTags" name="tags">
+
+        <button type="submit">Create Node</button>
+    </form>
+
+    <!-- Include JavaScript files here -->
+</body>
+</html>
