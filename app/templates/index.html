@@ -3,23 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <title>Create Node</title>
-    <!-- Link to CSS files and any additional head elements -->
 </head>
 <body>
     <h1>Create a New Node</h1>
-    <form id="nodeForm" action="/create_node" method="post">
-        <label for="nodeTitle">Title:</label>
-        <input type="text" id="nodeTitle" name="title" required>
+    <form action="/" method="post">
+        <label for="content">Content:</label><br>
+        <textarea id="content" name="content" rows="4" cols="50" required></textarea><br>
 
-        <label for="nodeContent">Content:</label>
-        <textarea id="nodeContent" name="content" required></textarea>
+        <label for="tag">Tag:</label><br>
+        <input type="text" id="tag" name="tag" required><br>
 
-        <label for="nodeTags">Tags (comma separated):</label>
-        <input type="text" id="nodeTags" name="tags">
-
-        <button type="submit">Create Node</button>
+        <input type="submit" value="Submit">
     </form>
 
-    <!-- Include JavaScript files here -->
+    <h2>Existing Nodes</h2>
+    <ul>
+        {% for node in nodes %}
+            <li>ID: {{ node.id }}, Content: {{ node.content }}, Tag: {{ node.metadata }}</li>
+        {% endfor %}
+    </ul>
 </body>
 </html>
