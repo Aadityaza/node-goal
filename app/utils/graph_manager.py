@@ -20,5 +20,3 @@ class GraphManager:
 
     def find_node(self, node_id):
         return self.nodes.get(node_id, None)
-
-    # Additional methods to manage links could be here...

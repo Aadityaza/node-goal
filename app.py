@@ -1,38 +1,43 @@
-from flask import render_template
-from app.models.node import *
+from app.services.node import *
 from app.utils.graph_manager import *
-from flask import Flask, jsonify, request
+from app.utils.graph_view import *
+from flask import Flask, render_template, request, redirect, url_for
+from jinja2 import ChoiceLoader, FileSystemLoader
+from flask import jsonify
 
-app = Flask(__name__)
-graph_manager = GraphManager()  # Instantiate your GraphManager
 
+app = Flask(__name__, template_folder='app/templates')
+graph_manager = GraphManager()
 
-app = Flask(__name__)
-nodes = {}
+graph_view_instance = GraphView(graph_manager)
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    if request.method == 'POST':
+        node_id = len(graph_manager.nodes) + 1  # Or however you generate new IDs
+        content = request.form.get('content')
+        tag = request.form.get('tag')
+        # Assuming GraphManager has an 'add_node' method
+        graph_manager.add_node(Node(node_id, content, tag))
+        # Redirect to the graph view page after adding the node
+        return redirect(url_for('graph_view'))
 
-@app.route('/')
-def home():
-    return render_template('index.html') 
+    # If it's not a POST request, just render the index page
+    return render_template('index.html', nodes=graph_manager.nodes.values())
 
-@app.route('/nodes', methods=['POST'])
-def create_node():
-    data = request.json
-    node = Node(id=data['id'], content=data['content'], links=[], metadata=data['metadata'])
-    try:
-        graph_manager.add_node(node)
-    except ValueError as e:
-        return jsonify({'message': str(e)}), 400
-    return jsonify(node.id), 201
+@app.route('/graph')
+def graph_view():
+    # Get graph data for the frontend from the GraphView instance
+    graph_data = graph_view_instance.get_graph_data()
+    # Render the graph template with the graph data
+    return render_template('graph.html', graph_data=graph_data)
 
-@app.route('/nodes/<node_id>', methods=['GET'])
-def get_node(node_id):
-    node = graph_manager.find_node(node_id)
-    if not node:
-        return jsonify({'message': 'Node not found'}), 404
-    # Assuming Node has a method to convert itself to a dict for JSON response
-    return jsonify(node.to_dict()), 200
+@app.route('/graph_data')
+def graph_data():
+    # Get graph data from the GraphView instance
+    graph_data = graph_view_instance.get_graph_data()
+    # Return the graph data as JSON
+    return jsonify(graph_data)
 
-# Additional routes to update and delete nodes using graph_manager would be here...
 
 if __name__ == '__main__':
     app.run(debug=True)
