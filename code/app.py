@@ -18,7 +18,6 @@ def index():
         tag = request.form.get('tag')
         # Assuming GraphManager has an 'add_node' method
         graph_manager.add_node(Node(node_id, content, tag))
-        graph_manager.save_nodes()
         # Redirect to the graph view page after adding the node
         return redirect(url_for('graph_view'))
 
