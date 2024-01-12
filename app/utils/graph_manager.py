@@ -1,6 +1,7 @@
 import json
-from app.services.node import Node
 import os
+from app.services.node import Node
+
 class GraphManager:
     def __init__(self, filename='nodes.json'):
         self.nodes = {}  # This will store nodes by their ID
@@ -10,11 +11,12 @@ class GraphManager:
     def save_nodes(self):
         with open(self.filename, 'w') as file:
             # Convert the nodes to a JSON-friendly format (e.g., list of dicts)
-            json.dump([node.to_dict() for node in self.nodes.values()], file)
+            # Include in_degree and out_degree in the node data
+            nodes_data = [self.node_to_dict(node) for node in self.nodes.values()]
+            json.dump(nodes_data, file)
 
     def load_nodes(self):
         if not os.path.exists(self.filename) or os.path.getsize(self.filename) == 0:
-            # If the file does not exist or is empty, start with an empty set of nodes
             self.nodes = {}
             return
 
@@ -44,3 +46,17 @@ class GraphManager:
 
     def find_node(self, node_id):
         return self.nodes.get(node_id, None)
+
+    def calculate_degrees(self):
+        in_degrees = {node_id: 0 for node_id in self.nodes}
+        for node in self.nodes.values():
+            for link in node.links:
+                in_degrees[link.target_id] += 1
+        return in_degrees
+
+    def node_to_dict(self, node):
+        in_degrees = self.calculate_degrees()
+        node_dict = node.to_dict()
+        node_dict['in_degree'] = in_degrees[node.id]
+        node_dict['out_degree'] = len(node.links)
+        return node_dict

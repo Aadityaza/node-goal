@@ -2,7 +2,6 @@ from app.services.node import *
 from app.utils.graph_manager import *
 from app.utils.graph_view import *
 from flask import Flask, render_template, request, redirect, url_for
-from jinja2 import ChoiceLoader, FileSystemLoader
 from flask import jsonify
 
 
@@ -20,11 +19,11 @@ def index():
         graph_manager.add_node(Node(node_id, content, tag))
         graph_manager.save_nodes()
         # Redirect to the graph view page after adding the node
-        return redirect(url_for('graph_view'))
+        return jsonify({'success': True})
 
-    # If it's not a POST request, just render the index page
-    return render_template('index.html', nodes=graph_manager.nodes.values())
-
+    # Your logic to display the page
+    graphdata = graph_view_instance.get_graph_data()
+    return render_template('index.html', nodes=graph_manager.nodes.values(), graph_data=graphdata)
 @app.route('/graph')
 def graph_view():
     # Get graph data for the frontend from the GraphView instance

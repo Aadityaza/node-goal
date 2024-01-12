@@ -35,9 +35,10 @@ class Node:
         self.content = content
         self.metadata = calculate_metadata(tags)
         self.links = Parser.parse(self.content, self.id)  # Outgoing links
-        self.size = len(content)
-        self.in_degree = 0  # Initially zero, to be updated based on incoming links
-        self.out_degree = len(self.links)  # Calculated from outgoing links
+
+    def size(self, in_degree=0):
+        # Calculate size based on content length and in-degree
+        return len(self.content) + in_degree * 10  # Adjust the formula as needed
 
     def to_dict(self):
         return {
@@ -45,24 +46,8 @@ class Node:
             'content': self.content,
             'links': [link.to_dict() for link in self.links],
             'metadata': self.metadata.to_dict(),
-            'size': self.size,
-            'in_degree': self.in_degree,
-            'out_degree': self.out_degree
+            'size': self.size()  # Call size method without in_degree here
         }
-
-    # Method to update in-degree, typically called when another node links to this node
-    def update_in_degree(self, increment=True):
-        if increment:
-            self.in_degree += 1
-        else:
-            self.in_degree -= 1
-
-    # Method to update out-degree, typically called when this node links to or removes a link to another node
-    def update_out_degree(self, increment=True):
-        if increment:
-            self.out_degree += 1
-        else:
-            self.out_degree -= 1
 
     @classmethod
     def from_dict(cls, data):
@@ -71,17 +56,11 @@ class Node:
         tags = data['metadata']['tags']
 
         node = cls(id, content, tags)
-
-        # Assuming you store links as a list of dictionaries in 'links' key
-        # and you have a Link class with a similar from_dict method.
         node.links = [Link.from_dict(link_data) for link_data in data['links']]
-
-        node.size = data['size']
-        node.in_degree = data['in_degree']
-        node.out_degree = data['out_degree']
 
         # Handle creation and last modified date
         node.metadata.creation_date = datetime.fromisoformat(data['metadata']['creation_date'])
         node.metadata.last_modified_date = datetime.fromisoformat(data['metadata']['last_modified_date'])
 
         return node
+
