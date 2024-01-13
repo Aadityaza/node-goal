@@ -1,31 +1,247 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Create Node</title>
+    <title>Dashboard</title>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            color: #333;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh; /* Full height of the viewport */
+        }
+
+        .form-container {
+            flex: 1;
+            padding: 20px;
+            background-color: #f7f7f7;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        form {
+            max-width: 300px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .input-group button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            background-color: #5cb85c;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .input-group button:hover {
+            background-color: #4cae4c;
+        }
+
+        .graph-container {
+            flex: 2;
+            padding: 20px;
+        }
+
+        svg {
+            width: 100%;
+            height: 100%;
+            border: 1px solid #ddd;
+        }
+
+        .node {
+            stroke: #fff;
+            stroke-width: 1.5px;
+        }
+
+        .link {
+            stroke: #999;
+            stroke-opacity: 0.6;
+        }
+    </style>
 </head>
 <body>
-    <h1>Create a New Node</h1>
-    <form action="/" method="post">
-        <label for="content">Content:</label><br>
-        <textarea id="content" name="content" rows="4" cols="50" required></textarea><br>
-
-        <label for="tag">Tag:</label><br>
-        <input type="text" id="tag" name="tag" required><br>
-
-        <input type="submit" value="Submit">
-    </form>
-
-    <div id="graph-container">
-        <!-- Your graph will be displayed here -->
+    <div class="container">
+        <div class="form-container">
+            <form action="/form" method="post">
+                <div class="input-group">
+                    <label for="content">Content:</label>
+                    <input type="text" id="content" name="content">
+                </div>
+                <div class="input-group">
+                    <label for="tag">Tag:</label>
+                    <input type="text" id="tag" name="tag">
+                </div>
+                <div class="input-group">
+                    <button type="submit">Submit</button>
+                </div>
+            </form>
+        </div>
+        <div class="graph-container">
+            <svg></svg>
+        </div>
     </div>
 
-    <h2>Existing Nodes</h2>
-    <ul>
-        {% for node in nodes %}
-            <li>ID: {{ node.id }}, Content: {{ node.content }}, Tag: {{ node.metadata }}</li>
-        {% endfor %}
-    </ul>
-<script src="app.static.js.graph.js"></script>
+   <script>
+
+        // Declare simulation globally
+        var simulation;
+
+        function generateGraph(inputNodes, inputLinks) {
+            // Get the dimensions of the container
+            var graphContainer = document.querySelector('.graph-container');
+            var width = graphContainer.clientWidth;
+            var height = graphContainer.clientHeight;
+
+            // Apply these dimensions to your SVG
+            var svg = d3.select('.graph-container svg')
+                .attr('width', width)
+                .attr('height', height);
+
+            // Convert the input data into D3's expected format
+            var nodes = inputNodes.map(d => Object.assign({}, d));
+            var links = inputLinks.map(d => Object.assign({}, d));
+
+            // Create the simulation with nodes and links
+            simulation = d3.forceSimulation(nodes)
+                .force("link", d3.forceLink(links).id(d => d.id))
+                .force("charge", d3.forceManyBody())
+                .force("center", d3.forceCenter(width / 2, height / 2));
+
+            // Create the link lines
+            var link = svg.append("g")
+                .attr("class", "links")
+                .selectAll("line")
+                .data(links)
+                .enter().append("line")
+                .attr("class", "link");
+
+            // Create the node circles
+            var node = svg.append("g")
+                .attr("class", "nodes")
+                .selectAll("circle")
+                .data(nodes)
+                .enter().append("circle")
+                .attr("class", "node")
+                .attr("r", 5)
+                .call(d3.drag()
+                    .on("start", dragstarted)
+                    .on("drag", dragged)
+                    .on("end", dragended));
+
+            // Define the radius for the nodes
+            var radius = 5;
+
+            // Update the simulation on each tick
+            simulation.on("tick", () => {
+                link
+                    .attr("x1", d => d.source.x)
+                    .attr("y1", d => d.source.y)
+                    .attr("x2", d => d.target.x)
+                    .attr("y2", d => d.target.y);
+
+                // Keep the nodes inside the graph container
+                node
+                    .attr("cx", d => Math.max(radius, Math.min(width - radius, d.x)))
+                    .attr("cy", d => Math.max(radius, Math.min(height - radius, d.y)));
+            });
+        }
+
+        function dragstarted(event, d) {
+            if (!event.active) simulation.alphaTarget(0.3).restart();
+            d.fx = d.x;
+            d.fy = d.y;
+        }
+
+        function dragged(event, d) {
+            d.fx = event.x;
+            d.fy = event.y;
+        }
+
+        function dragended(event, d) {
+            if (!event.active) simulation.alphaTarget(0);
+            d.fx = null;
+            d.fy = null;
+        }
+
+        // Get the dimensions of the container
+        var graphContainer = document.querySelector('.graph-container');
+        var width = graphContainer.clientWidth;
+        var height = graphContainer.clientHeight;
+
+        // Apply these dimensions to your SVG
+        var svg = d3.select('.graph-container svg')
+            .attr('width', width)
+            .attr('height', height);
+
+
+
+        // Get the svg element and its dimensions
+        var svg = d3.select("svg"),
+            width = +svg.attr("width"),
+            height = +svg.attr("height");
+
+        // Assume graph_data is passed in correctly from Flask as JSON embedded in the HTML
+        var graph_data = {{ graph_data | tojson | safe }};
+        console.log(graph_data)
+        generateGraph(graph_data.nodes, graph_data.links);
+    </script>x
+<script>
+    $(document).ready(function() {
+        $('form').on('submit', function(event) {
+            event.preventDefault(); // Prevent the form from submitting via the browser.
+
+            var formData = {
+                'content': $('input[name=content]').val(),
+                'tag': $('input[name=tag]').val()
+            };
+
+            $.ajax({
+                type: 'POST',
+                url: '/form',
+                data: formData,
+                dataType: 'json',
+                encode: true
+            })
+            .done(function(data) {
+                console.log(data);
+                // Here you can also call a function to update the graph visualization
+                // with the new node.
+            })
+            .fail(function(jqXHR, textStatus, errorThrown) {
+                console.error("Error occurred: " + textStatus, errorThrown);
+            });
+        });
+    });
+</script>
+
+
 </body>
 </html>
