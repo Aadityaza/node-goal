@@ -4,7 +4,7 @@ from app.utils.graph_view import *
 from flask import Flask, render_template, request, redirect, url_for
 from flask import jsonify
 
-app = Flask(__name__, template_folder='app/templates')
+app = Flask(__name__, template_folder='app/templates',static_folder='app/static')
 graph_manager = GraphManager()
 
 graph_view_instance = GraphView(graph_manager)
@@ -45,7 +45,6 @@ def graph_data():
     graph_data = graph_view_instance.get_graph_data()
     # Return the graph data as JSON
     return jsonify(graph_data)
-
-
+    
 if __name__ == '__main__':
     app.run(debug=True)
