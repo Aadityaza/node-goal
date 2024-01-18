@@ -23,13 +23,12 @@ def form():
     if request.method == 'POST':
         node_id = len(graph_manager.nodes) + 1
         content = request.form['content']
-        tag = request.form['tag']
 
-        new_node = Node(node_id, content, tag)
+        new_node = Node(node_id, content)
         graph_manager.add_node(new_node)
 
         # Return data as JSON
-        return jsonify(node_id=node_id, content=content, tag=tag)
+        return jsonify(node_id=node_id, content=content)
 
 @app.route('/graph')
 def graph_view():
