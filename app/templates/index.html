@@ -8,7 +8,7 @@
     />
 
     <script src="https://d3js.org/d3.v6.min.js"></script>
-
+    <script src = "{{ url_for('static', filename='js/htmx.min.js') }}"></script>
     <script
       src="https://code.jquery.com/jquery-3.7.1.min.js"
       integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
@@ -20,7 +20,8 @@
       <div class="w-1/3">
         <form
           class="flex justify-stretch gap-2 w-full"
-          action="/form"
+          hx-post="/form"
+          hx-target="#dalal"
           method="post"
         >
           <input
@@ -37,6 +38,10 @@
             Add
           </button>
         </form>
+        <div id ="dalal">
+          HI dallala
+        </div>
+
 
         <ul class="space-y-5 py-5">
           {% for i in range(3) %}
@@ -149,33 +154,33 @@
             console.log(graph_data);
             generateGraph(graph_data.nodes, graph_data.links);
     </script>
-    <script>
-      $(document).ready(function () {
-        $("form").on("submit", function (event) {
-          event.preventDefault(); // Prevent the form from submitting via the browser.
+<!--    <script>-->
+<!--      $(document).ready(function () {-->
+<!--        $("form").on("submit", function (event) {-->
+<!--          event.preventDefault(); // Prevent the form from submitting via the browser.-->
 
-          var formData = {
-            content: $("input[name=content]").val(),
-            tag: $("input[name=tag]").val(),
-          };
+<!--          var formData = {-->
+<!--            content: $("input[name=content]").val(),-->
+<!--            tag: $("input[name=tag]").val(),-->
+<!--          };-->
 
-          $.ajax({
-            type: "POST",
-            url: "/form",
-            data: formData,
-            dataType: "json",
-            encode: true,
-          })
-            .done(function (data) {
-              console.log(data);
-              // Here you can also call a function to update the graph visualization
-              // with the new node.
-            })
-            .fail(function (jqXHR, textStatus, errorThrown) {
-              console.error("Error occurred: " + textStatus, errorThrown);
-            });
-        });
-      });
-    </script>
+<!--          $.ajax({-->
+<!--            type: "POST",-->
+<!--            url: "/form",-->
+<!--            data: formData,-->
+<!--            dataType: "json",-->
+<!--            encode: true,-->
+<!--          })-->
+<!--            .done(function (data) {-->
+<!--              console.log(data);-->
+<!--              // Here you can also call a function to update the graph visualization-->
+<!--              // with the new node.-->
+<!--            })-->
+<!--            .fail(function (jqXHR, textStatus, errorThrown) {-->
+<!--              console.error("Error occurred: " + textStatus, errorThrown);-->
+<!--            });-->
+<!--        });-->
+<!--      });-->
+<!--    </script>-->
   </body>
 </html>
