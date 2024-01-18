@@ -1,4 +1,14 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.node {
+  @apply stroke-black;
+}
+
+.link {
+  @apply stroke-black;
+}
+.graph-container {
+  @apply w-2/3 p-5 border h-[95vh] rounded-md;
+}
