@@ -119,10 +119,10 @@ def form():
         # Get the graph data
         graphdata = graph_view_instance.get_graph_data()
         #Parse the Json string into aa dictionary
-        graphdata_dict = json.loads(graphdata)
+        # graphdata_dict = json.loads(graphdata)
 
         output = ""
-        for data in graphdata_dict['nodes']:
+        for data in graphdata['nodes']:
             output +=  f'<li class="p-5 rounded-md shadow-sm border border-slate-100">{data["id"]}. {data["content"]} </li>'
             
         # Return data as JSON
@@ -130,6 +130,21 @@ def form():
         return output
 
 
+@app.route('/htmxGetAllTasks', methods=['GET'])
+def getAllTasks():
+    graph_manager = GraphManager(user_id=session['username'])
+    graph_view_instance = GraphView(graph_manager)
+    # Get the graph data
+    graphdata = graph_view_instance.get_graph_data()
+    #Parse the Json string into aa dictionary
+    # graphdata_dict = json.loads(graphdata)
+    output = ""
+    for data in graphdata['nodes']:
+        output +=  f'<li class="p-5 rounded-md shadow-sm border border-slate-100">{data["id"]}. {data["content"]} </li>'
+        
+    # Return data as JSON
+    # json_data = jsonify(graphdata)
+    return output
 
 @app.route('/graph')
 def graph_view():
