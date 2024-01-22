@@ -51,7 +51,6 @@ class Node:
     def from_dict(cls, data):
         id = data['id']
         content = data['content']
-        tags = data['metadata']['tags']
 
         node = cls(id, content)
         node.links = [Link.from_dict(link_data) for link_data in data['links']]
