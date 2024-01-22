@@ -30,7 +30,7 @@
         </button>
       </form>
 
-      <ul class="space-y-5 py-5" id="tasks">
+      <ul class="space-y-5 py-5" id="tasks" hx-get="/htmxGetAllTasks" hx-trigger="load">
         Loading Tasks ....
       </ul>
     </div>
