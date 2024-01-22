@@ -709,3 +709,20 @@ video {
   border-width: 1px;
   padding: 1.25rem;
 }
+
+
+
+.logout-nav {
+    position: fixed; /* Fixed position */
+    top: 10px;       /* Distance from the top */
+    right: 10px;     /* Distance from the right */
+    font-size: 20px; /* Icon size, adjust as needed */
+}
+
+.logout-nav a {
+    color: #000; /* Icon color, adjust as needed */
+}
+
+.logout-nav a:hover {
+    color: #666; /* Icon hover color, adjust as needed */
+}

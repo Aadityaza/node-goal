@@ -3,15 +3,14 @@ import os
 from app.services.node import Node
 
 class GraphManager:
-    def __init__(self, filename='nodes.json'):
-        self.nodes = {}  # This will store nodes by their ID
-        self.filename = filename
-        self.load_nodes()  # Load nodes from file on initialization
+    def __init__(self, user_id):
+        self.user_id = user_id
+        self.nodes = {}
+        self.filename = f'nodes_{self.user_id}.json'  # Unique filename for each user
+        self.load_nodes()
 
     def save_nodes(self):
         with open(self.filename, 'w') as file:
-            # Convert the nodes to a JSON-friendly format (e.g., list of dicts)
-            # Include in_degree and out_degree in the node data
             nodes_data = [self.node_to_dict(node) for node in self.nodes.values()]
             json.dump(nodes_data, file)
 

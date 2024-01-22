@@ -13,8 +13,6 @@ app = Flask(__name__, template_folder='app/templates', static_folder='app/static
 bcrypt = Bcrypt(app)
 app.secret_key = 'your_secret_key'  # Change this to a random secret key
 
-graph_manager = GraphManager()
-graph_view_instance = GraphView(graph_manager)
 
 
 class User:
@@ -47,6 +45,7 @@ def login():
 
         if username in users and bcrypt.check_password_hash(users[username], password):
             session['username'] = username
+
             return redirect(url_for('dashboard'))
         else:
             return 'Invalid username or password', 401
@@ -59,6 +58,14 @@ def register():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+
+        # Load existing users
+        users = load_users()
+
+        # Check if the username already exists
+        if username in users:
+            return 'Username already exists', 400
+
         password_hash = bcrypt.generate_password_hash(password).decode('utf-8')
 
         new_user = User(username, password_hash)
@@ -77,11 +84,19 @@ def logout():
 
 @app.route('/')
 def index():
+    if 'username' in session:
+        return redirect(url_for('dashboard'))
     return render_template('index.html')
 
 
 @app.route('/dashboard')
 def dashboard():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    graph_manager = GraphManager(user_id=session['username'])
+    graph_view_instance = GraphView(graph_manager)
+
     # Get the graph data
     graphdata = graph_view_instance.get_graph_data()
     # Render the index template with both nodes and graph data
@@ -90,6 +105,9 @@ def dashboard():
 
 @app.route('/form', methods=['POST'])
 def form():
+    graph_manager = GraphManager(user_id=session['username'])
+    graph_view_instance = GraphView(graph_manager)
+
     if request.method == 'POST':
         node_id = len(graph_manager.nodes) + 1
         content = request.form['content']
@@ -103,6 +121,9 @@ def form():
 
 @app.route('/graph')
 def graph_view():
+    graph_manager = GraphManager(user_id=session['username'])
+    graph_view_instance = GraphView(graph_manager)
+
     # Get graph data for the frontend from the GraphView instance
     graph_data = graph_view_instance.get_graph_data()
     # Render the graph template with the graph data
@@ -111,6 +132,9 @@ def graph_view():
 
 @app.route('/graph_data')
 def graph_data():
+    graph_manager = GraphManager(user_id=session['username'])
+    graph_view_instance = GraphView(graph_manager)
+
     # Get graph data from the GraphView instance
     graph_data = graph_view_instance.get_graph_data()
     # Return the graph data as JSON
