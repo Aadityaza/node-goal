@@ -114,9 +114,21 @@ def form():
 
         new_node = Node(node_id, content)
         graph_manager.add_node(new_node)
+       
 
+        # Get the graph data
+        graphdata = graph_view_instance.get_graph_data()
+        #Parse the Json string into aa dictionary
+        graphdata_dict = json.loads(graphdata)
+
+        output = ""
+        for data in graphdata_dict['nodes']:
+            output +=  f'<li class="p-5 rounded-md shadow-sm border border-slate-100">{data["id"]}. {data["content"]} </li>'
+            
         # Return data as JSON
-        return jsonify(node_id=node_id, content=content)
+        # json_data = jsonify(graphdata)
+        return output
+
 
 
 @app.route('/graph')
