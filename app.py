@@ -112,7 +112,7 @@ def form():
         node_id = len(graph_manager.nodes) + 1
         content = request.form['content']
 
-        new_node = Node(node_id, content)
+        new_node = Node(node_id, content, type ='task')
         graph_manager.add_node(new_node)
        
 
