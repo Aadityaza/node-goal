@@ -40,31 +40,24 @@
   </div>
 
   <script>
-document.addEventListener('htmx:afterSwap', function (event) {
-  // Check if the swap was done on the #tasks element
-  if (event.detail.target.matches('#tasks')) {
-    // Additional code to run after htmx request is done rendering for #tasks
-    const tasks = document.getElementById('tasks');
-    const nodesString = tasks.getAttribute('data-nodes');
-    const linksString = tasks.getAttribute('data-links');
+    document.addEventListener('htmx:afterSwap', function (event) {
+      // Check if the swap was done on the #tasks element
+      if (event.detail.target.matches('#tasks')) {
+        // Additional code to run after htmx request is done rendering for #tasks
+        const tasks = document.getElementById('tasks');
+        const nodesString = tasks.getAttribute('data-nodes');
+        const linksString = tasks.getAttribute('data-links');
+        // Replace single quotes with double quotes to make it valid JSON
+        const validNodesString = nodesString.replace(/'/g, '"');
+        const validLinksString = linksString.replace(/'/g, '"');
+        // Parse the JSON strings into arrays
+        const nodesArray = JSON.parse(validNodesString);
+        const linksArray = JSON.parse(validNodesString);
+        console.log(nodesArray)
+        generateGraph(nodesArray, linksArray);
 
-    console.log("nodesString:", nodesString);
-    console.log("linksString:", linksString);
-
-    // Parse the strings into JavaScript objects
-    // const nodes = JSON.parse(nodesString);
-    
-    // Remove the extra parenthesis from linksString
-    const cleanedLinksString = linksString.replace(/\]\)/, ']');
-    
-    const links = JSON.parse(cleanedLinksString);
-
-    console.log("nodes are:", nodes);
-    console.log("links are:", links);
-
-    // generateGraph(nodes, links);
-  }
-});
+      }
+    });
 
 
 
@@ -161,7 +154,7 @@ document.addEventListener('htmx:afterSwap', function (event) {
 
     // Assume graph_data is passed in correctly from Flask as JSON embedded in the HTML
     var graph_data = {{ graph_data | tojson | safe }};
-    console.log(graph_data)
+    console.log(graph_data.nodes, graph_data.links)
     generateGraph(graph_data.nodes, graph_data.links);
   </script>
 </body>
