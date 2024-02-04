@@ -61,7 +61,11 @@ def register():
 
         # Load existing users
         users = load_users()
+        # Check if the username already exists
+        if username in users:
+            return 'Username already exists', 400
 
+        password_hash = bcrypt.generate_password_hash(password).decode('utf-8')
         # Check if the username already existsnodes=graph_manager.nodes.values(), graph_data=graphdata
         new_user = User(username, password_hash)
         save_user(new_user)
