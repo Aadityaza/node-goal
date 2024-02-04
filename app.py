@@ -62,12 +62,7 @@ def register():
         # Load existing users
         users = load_users()
 
-        # Check if the username already exists
-        if username in users:
-            return 'Username already exists', 400
-
-        password_hash = bcrypt.generate_password_hash(password).decode('utf-8')
-
+        # Check if the username already existsnodes=graph_manager.nodes.values(), graph_data=graphdata
         new_user = User(username, password_hash)
         save_user(new_user)
 
@@ -126,8 +121,9 @@ def form():
             output +=  f'<li class="p-5 rounded-md shadow-sm border border-slate-100">{data["id"]}. {data["content"]} </li>'
             
         # Return data as JSON
-        # json_data = jsonify(graphdata)
-        return output
+        json_data = jsonify(graphdata)
+        print(graphdata)
+    return f' <ul class="space-y-5 py-5" id="tasks" data-nodes="{graphdata["nodes"]}" data-links="{graphdata["links"]})">{output}</ul> '
 
 
 @app.route('/htmxGetAllTasks', methods=['GET'])
@@ -144,7 +140,7 @@ def getAllTasks():
         
     # Return data as JSON
     # json_data = jsonify(graphdata)
-    return output
+    return f' <ul class="space-y-5 py-5" id="tasks" hx-get="/graph_data" hx-target="graph-container">{output}</ul> '
 
 @app.route('/graph')
 def graph_view():
@@ -163,9 +159,10 @@ def graph_data():
     graph_view_instance = GraphView(graph_manager)
 
     # Get graph data from the GraphView instance
-    graph_data = graph_view_instance.get_graph_data()
+    graphdata = graph_view_instance.get_graph_data()
     # Return the graph data as JSON
-    return jsonify(graph_data)
+
+    return f'<svg class="border w-full h-full" onload="generateGraph({graphdata["nodes"]},{graphdata["links"]});"></svg>' 
 
 
 if __name__ == '__main__':
