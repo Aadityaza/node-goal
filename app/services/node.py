@@ -33,6 +33,7 @@ class Node:
         self.content = content
         self.metadata = calculate_metadata()
         self.links = Parser.parse(self.content, self.id)  # Outgoing links
+        self.type # goal or task
 
     def size(self, in_degree=0):
         # Calculate size based on content length and in-degree
