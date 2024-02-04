@@ -111,19 +111,45 @@ def form():
         node_id = len(graph_manager.nodes) + 1
         content = request.form['content']
 
-        new_node = Node(node_id, content)
+        new_node = Node(node_id, content, type='task')
         graph_manager.add_node(new_node)
-       
 
         # Get the graph data
         graphdata = graph_view_instance.get_graph_data()
-        #Parse the Json string into aa dictionary
+        # Parse the Json string into aa dictionary
         # graphdata_dict = json.loads(graphdata)
 
         output = ""
         for data in graphdata['nodes']:
-            output +=  f'<li class="p-5 rounded-md shadow-sm border border-slate-100">{data["id"]}. {data["content"]} </li>'
-            
+            output += f'<li class="p-5 rounded-md shadow-sm border border-slate-100">{data["id"]}. {data["content"]} </li>'
+
+        # Return data as JSON
+        json_data = jsonify(graphdata)
+        print(graphdata)
+    return f' <ul class="space-y-5 py-5" id="tasks" data-nodes="{graphdata["nodes"]}" data-links="{graphdata["links"]})">{output}</ul> '
+
+
+@app.route('/form_2', methods=['POST'])
+def form_2():
+    graph_manager = GraphManager(user_id=session['username'])
+    graph_view_instance = GraphView(graph_manager)
+
+    if request.method == 'POST':
+        node_id = len(graph_manager.nodes) + 1
+        content = request.form['content']
+
+        new_node = Node(node_id, content,type = 'goal')
+        graph_manager.add_node(new_node)
+
+        # Get the graph data
+        graphdata = graph_view_instance.get_graph_data()
+        # Parse the Json string into aa dictionary
+        # graphdata_dict = json.loads(graphdata)
+
+        output = ""
+        for data in graphdata['nodes']:
+            output += f'<li class="p-5 rounded-md shadow-sm border border-slate-100">{data["id"]}. {data["content"]} </li>'
+
         # Return data as JSON
         json_data = jsonify(graphdata)
         print(graphdata)
