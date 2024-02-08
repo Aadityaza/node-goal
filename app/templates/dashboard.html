@@ -57,7 +57,7 @@
         const linksArray = JSON.parse(validLinksString);
         // delete everyting insdie the svg
         const graphCanvas = document.getElementById('graphCanvas')
-        svg.innerHTML = '';
+        graphCanvas.innerHTML = '';
         generateGraph(nodesArray, linksArray);
 
       }
