@@ -125,7 +125,7 @@ def form():
 
         # Return data as JSON
         json_data = jsonify(graphdata)
-        response = Response( f' <ul class="space-y-5 py-5" id="tasks" data-nodes="{graphdata["nodes"]}" data-links="{graphdata["links"]})">{output}</ul> ') 
+        response = Response( f'<ul class="space-y-5 py-5" id="tasks" data-nodes="{graphdata["nodes"]}" data-links="{graphdata["links"]}"> <span>{output}</span> <button class="rounded-full p-5 border bg-slate-300">edit</ul>') 
 
         # Set response Header
         response.headers['HX-Trigger'] = 'generateGraph'

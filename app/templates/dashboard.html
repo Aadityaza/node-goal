@@ -29,13 +29,12 @@
           Add
         </button>
       </form>
-
       <ul class="space-y-5 py-5" hx-get="/htmxGetAllTasks" hx-trigger="load" hx-swap="outerHTML">
         Loading Tasks ....
       </ul>
     </div>
     <div class="graph-container" id="graph-container">
-      <svg class="border w-full h-full"></svg>
+      <svg class="border w-full h-full" id="graphCanvas"></svg>
     </div>
   </div>
 
@@ -47,13 +46,18 @@
         const tasks = document.getElementById('tasks');
         const nodesString = tasks.getAttribute('data-nodes');
         const linksString = tasks.getAttribute('data-links');
+
+        console.log("line 60:", linksString)
         // Replace single quotes with double quotes to make it valid JSON
         const validNodesString = nodesString.replace(/'/g, '"');
         const validLinksString = linksString.replace(/'/g, '"');
+        console.log("line 62:", validLinksString)
         // Parse the JSON strings into arrays
         const nodesArray = JSON.parse(validNodesString);
-        const linksArray = JSON.parse(validNodesString);
-        console.log(nodesArray)
+        const linksArray = JSON.parse(validLinksString);
+        // delete everyting insdie the svg
+        const graphCanvas = document.getElementById('graphCanvas')
+        svg.innerHTML = '';
         generateGraph(nodesArray, linksArray);
 
       }
@@ -78,7 +82,6 @@
       // Convert the input data into d3's expected format
       var nodes = inputNodes.map((d) => Object.assign({}, d));
       var links = inputLinks.map((d) => Object.assign({}, d));
-
       // Create the simulation with nodes and links
       simulation = d3
         .forceSimulation(nodes)
