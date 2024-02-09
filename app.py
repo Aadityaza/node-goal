@@ -1,17 +1,13 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify, session
 from flask_bcrypt import Bcrypt
-import json
-import os
-
-from app.services.node import *
 from app.utils.graph_manager import *
 from app.utils.graph_view import *
 from flask import Flask, render_template, request, redirect, url_for
 from flask import jsonify, session, Response
+from app.services.link import Link
 
 app = Flask(__name__, template_folder='app/templates', static_folder='app/static')
 bcrypt = Bcrypt(app)
-app.secret_key = 'your_secret_key'  # Change this to a random secret key
+app.secret_key = 'your_secret_key'
 
 
 
@@ -112,25 +108,33 @@ def form():
         node_id = len(graph_manager.nodes) + 1
         content = request.form['content']
 
-        new_node = Node(node_id, content, type ='task')
+        new_node = Node(node_id, content, type='task')
         graph_manager.add_node(new_node)
-       
 
         # Get the graph data
         graphdata = graph_view_instance.get_graph_data()
 
         output = ""
         for data in graphdata['nodes']:
-            output +=  f'<li class="p-5 rounded-md shadow-sm border border-slate-100">{data["id"]}. {data["content"]} </li>'
+            output += f'<li class="p-5 rounded-md shadow-sm border border-slate-100">{data["id"]}. {data["content"]} </li>'
 
         # Return data as JSON
         json_data = jsonify(graphdata)
-        response = Response( f'<ul class="space-y-5 py-5" id="tasks" data-nodes="{graphdata["nodes"]}" data-links="{graphdata["links"]}"> <span>{output}</span> <button class="rounded-full p-5 border bg-slate-300">edit</ul>') 
-
+        response = Response(
+            f'<ul class="space-y-5 py-5" id="tasks" data-nodes="{graphdata["nodes"]}" data-links="{graphdata["links"]}"> <span>{output}</span> <button class="rounded-full p-5 border bg-slate-300">edit</ul>')
         # Set response Header
         response.headers['HX-Trigger'] = 'generateGraph'
+    return response
 
-    return response 
+
+@app.route('/form_graph/<id>', methods=['POST'])
+def form_graph(id):
+    graph_manager = GraphManager(user_id=session['username'])
+    if request.method == 'POST':
+        id = int(id)  # Convert id to integer
+        content = request.form['content']
+        graph_manager.update_node(id, content)
+        return 'Content updated'  # Return a simple response indicating success
 
 
 @app.route('/htmxGetAllTasks', methods=['GET'])
@@ -169,7 +173,13 @@ def graph_data():
     graphdata = graph_view_instance.get_graph_data()
     # Return the graph data as JSON
 
-    return f'<svg class="border w-full h-full" onload="generateGraph({graphdata["nodes"]},{graphdata["links"]});"></svg>' 
+    return f'<svg class="border w-full h-full" onload="generateGraph({graphdata["nodes"]},{graphdata["links"]});"></svg>'
+
+@app.route('/link/<node_id>/<target_id>', methods=['POST'])
+def link(node_id, target_id):
+    graph_manager = GraphManager(user_id=session['username'])
+    graph_manager.add_link(node_id, target_id)
+    return 'Linked hai guys'
 
 
 if __name__ == '__main__':

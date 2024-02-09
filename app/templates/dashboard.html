@@ -29,6 +29,20 @@
           Add
         </button>
       </form>
+      <form class="flex justify-stretch gap-2 w-full" hx-post="/form_graph/1" hx-target="#tasks" hx-swap="outerHTML">
+        <input type="text" id="content_" name="content" placeholder="Enter a Task"
+          class="p-3 border-2 border-slate-400 rounded-md w-full" />
+        <button class="bg-slate-900 px-4 py-2 text-slate-50 rounded-md" 333 type="submit">
+          Update
+        </button>
+      </form>
+      <form class="flex justify-stretch gap-2 w-full" hx-post="/link/1/2" hx-target="#tasks" hx-swap="outerHTML">
+        <input type="text" id="content__" name="content" placeholder="Link a Task to node 1"
+          class="p-3 border-2 border-slate-400 rounded-md w-full" />
+        <button class="bg-slate-900 px-4 py-2 text-slate-50 rounded-md" 333 type="submit">
+          Link
+        </button>
+      </form>
       <ul class="space-y-5 py-5" hx-get="/htmxGetAllTasks" hx-trigger="load" hx-swap="outerHTML">
         Loading Tasks ....
       </ul>
