@@ -17,7 +17,6 @@ class Parser:
                 links.append(link)
             except ValueError:
                 # Handle the case where the target is not an integer
-                # For example, log an error, skip, or handle differently
                 print(f"Invalid link target '{match}' in node {node_id}")
 
         return links
