@@ -181,6 +181,11 @@ def link(node_id, target_id):
     graph_manager.add_link(node_id, target_id)
     return 'Linked hai guys'
 
+@app.route('/delete_node/<node_id>', methods=['POST'])
+def delete(node_id):
+    graph_manager = GraphManager(user_id=session['username'])
+    graph_manager.delete_node(node_id)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
