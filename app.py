@@ -97,7 +97,8 @@ def dashboard():
     # Render the index template with both nodes and graph data
     return render_template('dashboard.html', nodes=graph_manager.nodes.values(), graph_data=graphdata)
 
-
+# Please Migrate all those functions wrapped with HTMX to it's own .py file
+#---------- HTMX ------------# 
 @app.route('/form', methods=['POST'])
 def form():
     graph_manager = GraphManager(user_id=session['username'])
@@ -113,20 +114,11 @@ def form():
 
         # Get the graph data
         graphdata = graph_view_instance.get_graph_data()
-
-        output = ""
-        for data in graphdata['nodes']:
-            output += f'<li class="p-5 rounded-md shadow-sm border border-slate-100">{data["id"]}. {data["content"]} </li>'
-
-        # Return data as JSON
-        json_data = jsonify(graphdata)
-        response = Response(
-            f'<ul class="space-y-5 py-5" id="tasks" data-nodes="{graphdata["nodes"]}" data-links="{graphdata["links"]}"> <span>{output}</span> <button class="rounded-full p-5 border bg-slate-300">edit</ul>')
-        # Set response Header
-        response.headers['HX-Trigger'] = 'generateGraph'
-    return response
+    return render_template('/htmx/taskCards.html', nodes=graphdata['nodes'],links=graphdata['links'])
+#---------- HTMX ------------# 
 
 
+#---------- HTMX ------------# 
 @app.route('/form_graph/<id>', methods=['POST'])
 def form_graph(id):
     graph_manager = GraphManager(user_id=session['username'])
@@ -135,24 +127,24 @@ def form_graph(id):
         content = request.form['content']
         graph_manager.update_node(id, content)
         return 'Content updated'  # Return a simple response indicating success
+#---------- HTMX ------------# 
 
-
+#---------- HTMX ------------# 
 @app.route('/htmxGetAllTasks', methods=['GET'])
 def getAllTasks():
     graph_manager = GraphManager(user_id=session['username'])
     graph_view_instance = GraphView(graph_manager)
     # Get the graph data
     graphdata = graph_view_instance.get_graph_data()
-    #Parse the Json string into aa dictionary
-    # graphdata_dict = json.loads(graphdata)
-    output = ""
-    for data in graphdata['nodes']:
-        output +=  f'<li class="p-5 rounded-md shadow-sm border border-slate-100">{data["id"]}. {data["content"]} </li>'
         
-    # Return data as JSON
-    # json_data = jsonify(graphdata)
-    return f' <ul class="space-y-5 py-5" id="tasks" hx-get="/graph_data" hx-target="graph-container">{output}</ul> '
+    return render_template('/htmx/initialTaskCards.html', nodes=graphdata['nodes'])
+#---------- HTMX ------------# 
 
+
+
+
+
+#--------- I think this below is not being used, If so you can remove it ----------#
 @app.route('/graph')
 def graph_view():
     graph_manager = GraphManager(user_id=session['username'])
@@ -162,29 +154,27 @@ def graph_view():
     graph_data = graph_view_instance.get_graph_data()
     # Render the graph template with the graph data
     return render_template('graph.html', graph_data=graph_data)
+#--------- I think this above is not being used, If so you can remove it ----------#
 
 
-@app.route('/graph_data')
-def graph_data():
-    graph_manager = GraphManager(user_id=session['username'])
-    graph_view_instance = GraphView(graph_manager)
 
-    # Get graph data from the GraphView instance
-    graphdata = graph_view_instance.get_graph_data()
-    # Return the graph data as JSON
 
-    return f'<svg class="border w-full h-full" onload="generateGraph({graphdata["nodes"]},{graphdata["links"]});"></svg>'
 
+#---------- HTMX ------------# 
 @app.route('/link/<node_id>/<target_id>', methods=['POST'])
 def link(node_id, target_id):
     graph_manager = GraphManager(user_id=session['username'])
     graph_manager.add_link(node_id, target_id)
     return 'Linked hai guys'
+#---------- HTMX ------------# 
 
+#---------- HTMX ------------# 
 @app.route('/delete_node/<node_id>', methods=['POST'])
 def delete(node_id):
     graph_manager = GraphManager(user_id=session['username'])
     graph_manager.delete_node(node_id)
+#---------- HTMX ------------# 
+
 
 
 if __name__ == '__main__':
