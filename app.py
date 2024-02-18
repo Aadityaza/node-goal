@@ -126,7 +126,9 @@ def form_graph(id):
         id = int(id)  # Convert id to integer
         content = request.form['content']
         graph_manager.update_node(id, content)
-        return 'Content updated'  # Return a simple response indicating success
+        # This will replace it's respective title
+        return content 
+
 #---------- HTMX ------------# 
 
 #---------- HTMX ------------# 
@@ -158,8 +160,6 @@ def graph_view():
 
 
 
-
-
 #---------- HTMX ------------# 
 @app.route('/link/<node_id>/<target_id>', methods=['POST'])
 def link(node_id, target_id):
@@ -171,8 +171,14 @@ def link(node_id, target_id):
 #---------- HTMX ------------# 
 @app.route('/delete_node/<node_id>', methods=['POST'])
 def delete(node_id):
+
+    node_id = int(node_id)  # Convert id to integer
     graph_manager = GraphManager(user_id=session['username'])
     graph_manager.delete_node(node_id)
+    graph_view_instance = GraphView(graph_manager)
+    # Get the graph data
+    graphdata = graph_view_instance.get_graph_data()
+    return render_template('/htmx/taskCards.html', nodes=graphdata['nodes'],links=graphdata['links'])
 #---------- HTMX ------------# 
 
 
