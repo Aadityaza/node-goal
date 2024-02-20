@@ -106,7 +106,9 @@ def form():
     response = None
 
     if request.method == 'POST':
+        # Put ULID Instead of ID here, Js vakovaye mai garthy but NOOO.
         node_id = len(graph_manager.nodes) + 1
+
         content = request.form['content']
 
         new_node = Node(node_id, content, type='task')
@@ -114,7 +116,7 @@ def form():
 
         # Get the graph data
         graphdata = graph_view_instance.get_graph_data()
-    return render_template('/htmx/taskCards.html', nodes=graphdata['nodes'],links=graphdata['links'])
+    return render_template('/htmx/taskCards.html', nodes=graphdata['nodes'],links=graphdata['links'],hello="hello")
 #---------- HTMX ------------# 
 
 
@@ -139,7 +141,7 @@ def getAllTasks():
     # Get the graph data
     graphdata = graph_view_instance.get_graph_data()
         
-    return render_template('/htmx/initialTaskCards.html', nodes=graphdata['nodes'])
+    return render_template('/htmx/initialTaskCards.html', nodes=graphdata['nodes'], hello='helloWorld' )
 #---------- HTMX ------------# 
 
 
@@ -167,6 +169,27 @@ def link(node_id, target_id):
     graph_manager.add_link(node_id, target_id)
     return 'Linked hai guys'
 #---------- HTMX ------------# 
+
+
+@app.route('/search/<node_id>', methods=['POST'])
+def searchResult():
+    # graph_manager = GraphManager(user_id=session['username'])
+    # graph_manager.add_link(node_id, target_id)
+    # this
+    dummy = [
+    {
+        "source_id":1,
+        'target_id': 4,
+        'content': 'this is'
+    },
+    {
+        "source_id":1,
+        'target_id': 20,
+        'content': 'this is'
+    }
+    ]
+    # content = request.form['content']
+    return dummy
 
 #---------- HTMX ------------# 
 @app.route('/delete_node/<node_id>', methods=['POST'])
