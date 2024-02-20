@@ -25,21 +25,22 @@
       <form class="flex justify-stretch gap-2 w-full" hx-post="/form" hx-target="#tasks" hx-swap="outerHTML">
         <input type="text" id="content" name="content" placeholder="Enter a Task"
           class="p-3 border-2 border-slate-400 rounded-md w-full" />
-        <button class="bg-slate-900 px-4 py-2 text-slate-50 rounded-md"  type="submit">
+        <button class="bg-slate-900 px-4 py-2 text-slate-50 rounded-md" type="submit">
           Add
         </button>
       </form>
       <!-- Explain this below please -->
       <form class="flex justify-stretch gap-2 w-full" hx-post="/link/1/3" hx-target="#tasks" hx-swap="outerHTML">
         <input type="text" id="content__" name="content" placeholder="Link a Task to node 1"
-          class="p-3 border-2 border-slate-400 rounded-md w-full" />
-        <button class="bg-slate-900 px-4 py-2 text-slate-50 rounded-md"  type="submit">
+          class="p-3 border-2 border-slate-400 rounded-md w-full" hx-post="/search" hx-target="#link"
+          hx-trigger="keyup changed delay:500ms" hx-swap="innerHTML" />
+        <button class=" bg-slate-900 px-4 py-2 text-slate-50 rounded-md" type="submit" id="link">
           Link
         </button>
       </form>
 
       <!-- Explain this above please -->
-      
+
       <ul class="space-y-5 py-5" hx-get="/htmxGetAllTasks" hx-trigger="load" hx-swap="outerHTML">
         Loading Tasks ....
       </ul>
