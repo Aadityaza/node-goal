@@ -1,4 +1,5 @@
 <ul class="space-y-5 py-5" id="tasks">
+    {{ hello }}
     {% for data in nodes %}
     {% include '/htmx/task.html' %}
     {% endfor %}
