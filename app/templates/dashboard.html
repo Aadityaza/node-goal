@@ -23,8 +23,8 @@
   <div class="flex gap-6">
     <div class="w-1/3">
       <form class="flex justify-stretch gap-2 w-full" hx-post="/form" hx-target="#tasks" hx-swap="outerHTML">
-        <input type="text" id="content" name="content" placeholder="Enter a Task"
-          class="p-3 border-2 border-slate-400 rounded-md w-full" />
+        <input type="text" id="content" name="content" required placeholder="Enter a Task"
+          class="p-3 border-2 border-slate-400 rounded-md w-full" >
         <button class="bg-slate-900 px-4 py-2 text-slate-50 rounded-md" type="submit">
           Add
         </button>
