@@ -1,6 +1,7 @@
 from flask_bcrypt import Bcrypt
 from app.utils.graph_manager import *
 from app.utils.graph_view import *
+import app.utils.search as search
 from flask import Flask, render_template, request, redirect, url_for
 from flask import jsonify, session, Response
 from app.services.link import Link
@@ -151,27 +152,15 @@ def link(node_id, target_id):
 #---------- HTMX ------------# 
 
 
-@app.route('/search/<node_id>', methods=['POST'])
-def searchResult():
+@app.route('/search/<node_id>/<word>',methods=['GET', 'POST'])
+def searchResult(node_id,word):
     graph_manager = GraphManager(user_id=session['username'])
     graph_view_instance = GraphView(graph_manager)
 
     # Get graph data for the frontend from the GraphView instance
     graph_data = graph_view_instance.get_graph_data()
-    dummy = [
-    {
-        "source_id":1,
-        'target_id': 4,
-        'content': 'this is'
-    },
-    {
-        "source_id":1,
-        'target_id': 20,
-        'content': 'this is'
-    }
-    ]
-    # content = request.form['content']
-    return dummy
+    matches= search.match(word,graph_data,node_id)
+    return matches
 
 #---------- HTMX ------------# 
 @app.route('/delete_node/<node_id>', methods=['POST'])

@@ -2,3 +2,4 @@ flask
 pandas
 flask_bcrypt
 ulid-py
+fuzzywuzzy
