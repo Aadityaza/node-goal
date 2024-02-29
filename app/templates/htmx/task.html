@@ -7,13 +7,19 @@
                 id="singleTask{{data['id']}}" value="{{data['content']}}" hx-post="/form_graph/{{data['id']}}"
                 hx-trigger="keyup changed delay:1000ms">
         </h2>
-        <svg class="size-5 shrink-0 transition duration-300 group-open:-rotate-180" xmlns="http://www.w3.org/2000/svg"
-            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg <svg class="size-5 shrink-0 transition duration-300 group-open:-rotate-180"
+            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
         </svg>
     </summary>
 
     <div class="bg-slate-50 ">
+        <!-- Search form -->
+        <input type="text" name="content" class="w-full bg-white border  text-lg font-medium p-2"
+            hx-post="/search/{{data['id']}}" hx-trigger="keyup changed delay:1000ms" hx-target="#searchReasult">
+        <ul id="searchReasult"> 
+            
+        </ul>
         <div class="w-full bg-slate-100 flex justify-end px-5 py-4 ">
             <button class="bg-red-900 px-4 py-2 text-slate-50 rounded-md" hx-POST="/delete_node/{{data['id']}}"
                 hx-target="#tasks">Delete </button>
