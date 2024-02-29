@@ -1,35 +1,18 @@
 from flask_bcrypt import Bcrypt
 from app.utils.graph_manager import *
 from app.utils.graph_view import *
+import app.utils.search as search
 from flask import Flask, render_template, request, redirect, url_for
 from flask import jsonify, session, Response
 from app.services.link import Link
+from app.services.user import *
+import ulid
 
 app = Flask(__name__, template_folder='app/templates', static_folder='app/static')
 bcrypt = Bcrypt(app)
 app.secret_key = 'your_secret_key'
 
 
-
-class User:
-    def __init__(self, username, password_hash):
-        self.username = username
-        self.password_hash = password_hash
-
-
-def load_users():
-    if not os.path.exists('users.json'):
-        return {}
-    with open('users.json', 'r') as f:
-        users = json.load(f)
-    return users
-
-
-def save_user(user):
-    users = load_users()
-    users[user.username] = user.password_hash
-    with open('users.json', 'w') as f:
-        json.dump(users, f)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -106,18 +89,16 @@ def form():
     response = None
 
     if request.method == 'POST':
-        # Put ULID Instead of ID here, Js vakovaye mai garthy but NOOO.
-        node_id = len(graph_manager.nodes) + 1
-
+        node_id = str(ulid.new().int)  # Generate a ULID
         content = request.form['content']
 
-        new_node = Node(node_id, content, type='task')
+        new_node = Node(int(node_id), content, type='task')  # Use ULID instead of incremental ID
         graph_manager.add_node(new_node)
 
         # Get the graph data
         graphdata = graph_view_instance.get_graph_data()
-    return render_template('/htmx/taskCards.html', nodes=graphdata['nodes'],links=graphdata['links'],hello="hello")
-#---------- HTMX ------------# 
+    return render_template('/htmx/taskCards.html', nodes=graphdata['nodes'], links=graphdata['links'], hello="hello")#---------- HTMX ------------#
+#---------- HTMX ------------#
 
 
 #---------- HTMX ------------# 
@@ -171,25 +152,15 @@ def link(node_id, target_id):
 #---------- HTMX ------------# 
 
 
-@app.route('/search/<node_id>', methods=['POST'])
-def searchResult():
-    # graph_manager = GraphManager(user_id=session['username'])
-    # graph_manager.add_link(node_id, target_id)
-    # this
-    dummy = [
-    {
-        "source_id":1,
-        'target_id': 4,
-        'content': 'this is'
-    },
-    {
-        "source_id":1,
-        'target_id': 20,
-        'content': 'this is'
-    }
-    ]
-    # content = request.form['content']
-    return dummy
+@app.route('/search/<node_id>/<word>',methods=['GET', 'POST'])
+def searchResult(node_id):
+    graph_manager = GraphManager(user_id=session['username'])
+    graph_view_instance = GraphView(graph_manager)
+    word = request.form['search']
+    # Get graph data for the frontend from the GraphView instance
+    graph_data = graph_view_instance.get_graph_data()
+    matches= search.match(word,graph_data,node_id)
+    return matches
 
 #---------- HTMX ------------# 
 @app.route('/delete_node/<node_id>', methods=['POST'])
