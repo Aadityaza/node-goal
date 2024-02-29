@@ -153,10 +153,10 @@ def link(node_id, target_id):
 
 
 @app.route('/search/<node_id>/<word>',methods=['GET', 'POST'])
-def searchResult(node_id,word):
+def searchResult(node_id):
     graph_manager = GraphManager(user_id=session['username'])
     graph_view_instance = GraphView(graph_manager)
-
+    word = request.form['search']
     # Get graph data for the frontend from the GraphView instance
     graph_data = graph_view_instance.get_graph_data()
     matches= search.match(word,graph_data,node_id)
