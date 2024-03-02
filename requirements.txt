@@ -3,3 +3,4 @@ pandas
 flask_bcrypt
 ulid-py
 fuzzywuzzy
+ python-Levenshtein
