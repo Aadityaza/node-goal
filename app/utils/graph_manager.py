@@ -1,17 +1,17 @@
 import json
 import os
 from app.services.node import Node
+from app.services.link import Link
 
 class GraphManager:
-    def __init__(self, filename='nodes.json'):
-        self.nodes = {}  # This will store nodes by their ID
-        self.filename = filename
-        self.load_nodes()  # Load nodes from file on initialization
+    def __init__(self, user_id):
+        self.user_id = user_id
+        self.nodes = {}
+        self.filename = f'nodes_{self.user_id}.json'  # Unique filename for each user
+        self.load_nodes()
 
     def save_nodes(self):
         with open(self.filename, 'w') as file:
-            # Convert the nodes to a JSON-friendly format (e.g., list of dicts)
-            # Include in_degree and out_degree in the node data
             nodes_data = [self.node_to_dict(node) for node in self.nodes.values()]
             json.dump(nodes_data, file)
 
@@ -37,6 +37,45 @@ class GraphManager:
             raise ValueError(f"Node with id {node_id} does not exist.")
         self.nodes[node_id].content = new_content
         self.save_nodes()
+
+    def add_link(self, source_id, target_id):
+        source_id= int(source_id)
+        target_id= int(target_id)
+        if source_id not in self.nodes:
+            raise ValueError(f"Node with id {source_id} does not exist.")
+        if target_id not in self.nodes:
+            raise ValueError(f"Node with id {target_id} does not exist.")
+        source_node = self.nodes[source_id]
+        target_node = self.nodes[target_id]
+
+        # Check if the link already exists
+        if any(link.target_id == target_id for link in source_node.links):
+            raise ValueError(f"Link from node {source_id} to node {target_id} already exists.")
+
+        # Add the link
+        link = Link(source_id, target_id)
+        source_node.links.append(link)
+        self.save_nodes()
+
+    def remove_link(self, source_id, target_id):
+        if source_id not in self.nodes:
+            raise ValueError(f"Node with id {source_id} does not exist.")
+        if target_id not in self.nodes:
+            raise ValueError(f"Node with id {target_id} does not exist.")
+        source_node = self.nodes[source_id]
+
+        # Find the index of the link to remove
+        index_to_remove = None
+        for i, link in enumerate(source_node.links):
+            if link['target'] == target_id:
+                index_to_remove = i
+                break
+
+        if index_to_remove is not None:
+            del source_node.links[index_to_remove]
+            self.save_nodes()
+        else:
+            raise ValueError(f"Link from node {source_id} to node {target_id} does not exist.")
 
     def delete_node(self, node_id):
         if node_id not in self.nodes:

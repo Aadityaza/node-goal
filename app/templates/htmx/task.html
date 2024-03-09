@@ -1,0 +1,37 @@
+<details class="group [&_summary::-webkit-details-marker]:hidden">
+    <summary class="flex cursor-pointer items-center justify-between gap-1.5 rounded-lg bg-slate-50 p-4 text-gray-900">
+        <h2 class="font-medium flex items-center gap-2">
+            <input type="checkbox" class="size-4 accent-slate-900">
+
+            <input type="text" name="content" class="w-full bg-slate-50 text-lg font-medium p-2"
+                id="singleTask{{data['id']}}" value="{{data['content']}}" hx-post="/form_graph/{{data['id']}}"
+                hx-trigger="keyup changed delay:1000ms">
+        </h2>
+        <svg <svg class="size-5 shrink-0 transition duration-300 group-open:-rotate-180"
+            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg>
+    </summary>
+
+    <div class="relative bg-slate-50 ">
+        <!-- Search form -->
+        <div class="flex items-center gap-2 border m-2 bg-slate-50 ">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="feather feather-search">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+
+            <input type="text" name="search" class="w-full bg-white border  text-lg font-medium p-2"
+                hx-post="/search/{{data['id']}}" hx-trigger="keyup changed delay:500ms" hx-target="#searchReasult{{data['id']}}" hx-swap="outerHTML">
+        </div>
+        <ul class="absolute bg-white " id="searchReasult{{data['id']}}">
+
+        </ul>
+        <div class="w-full bg-slate-100 flex justify-end px-5 py-4 ">
+            <button class="bg-red-900 px-4 py-2 text-slate-50 rounded-md" hx-POST="/delete_node/{{data['id']}}"
+                hx-target="#tasks">Delete </button>
+        </div>
+    </div>
+</details>
