@@ -144,7 +144,7 @@ def graph_view():
 
 
 #---------- HTMX ------------# 
-@app.route('/link/<node_id>/<target_id>', methods=['POST'])
+@app.route('/link/<node_id>/<target_id>', methods=['GET'])
 def link(node_id, target_id):
     graph_manager = GraphManager(user_id=session['username'])
     graph_manager.add_link(node_id, target_id)
@@ -160,6 +160,7 @@ def searchResult(node_id):
     # Get graph data for the frontend from the GraphView instance
     graph_data = graph_view_instance.get_graph_data()
     matches= search.match(word,graph_data,node_id)
+    print(matches)
     return render_template('/htmx/searchResults.html',matches=matches) 
 
 #---------- HTMX ------------# 

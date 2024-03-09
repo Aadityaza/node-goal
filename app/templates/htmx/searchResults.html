@@ -1,3 +1,7 @@
-{% for data in matches %}
-    <li>{{data['content']}}</li>
-{% endfor %}
+<ul class="absolute bg-slate-100 w-full space-y-1 p-4" id="">
+    {% for data in matches %}
+    <li hx-get="/link/{{data['source_id']}}/{{data['target_id']}}" hx-on="click" hx-target="links{{data['source_id']}}"
+        class="w-full p-2 border-b">{{data['content']}}</li>
+    {% endfor %}
+
+</ul>
