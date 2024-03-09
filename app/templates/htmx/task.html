@@ -13,12 +13,21 @@
         </svg>
     </summary>
 
-    <div class="bg-slate-50 ">
+    <div class="relative bg-slate-50 ">
         <!-- Search form -->
-        <input type="text" name="content" class="w-full bg-white border  text-lg font-medium p-2"
-            hx-post="/search/{{data['id']}}" hx-trigger="keyup changed delay:1000ms" hx-target="#searchReasult">
-        <ul id="searchReasult"> 
-            
+        <div class="flex items-center gap-2 border m-2 bg-slate-50 ">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="feather feather-search">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+
+            <input type="text" name="search" class="w-full bg-white border  text-lg font-medium p-2"
+                hx-post="/search/{{data['id']}}" hx-trigger="keyup changed delay:1000ms" hx-target="#searchReasult">
+        </div>
+        <ul class="absolute bg-white " id="searchReasult">
+
         </ul>
         <div class="w-full bg-slate-100 flex justify-end px-5 py-4 ">
             <button class="bg-red-900 px-4 py-2 text-slate-50 rounded-md" hx-POST="/delete_node/{{data['id']}}"
