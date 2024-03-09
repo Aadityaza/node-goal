@@ -26,6 +26,7 @@
             <input type="text" name="search" class="w-full bg-white border  text-lg font-medium p-2"
                 hx-post="/search/{{data['id']}}" hx-trigger="keyup changed delay:500ms" hx-target="#searchReasult{{data['id']}}" hx-swap="outerHTML">
         </div>
+        <ul class="" id="links{{data['id']}}"></ul>
         <ul class="absolute bg-white " id="searchReasult{{data['id']}}">
 
         </ul>
