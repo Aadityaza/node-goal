@@ -161,7 +161,7 @@ def searchResult(node_id):
     graph_data = graph_view_instance.get_graph_data()
     matches= search.match(word,graph_data,node_id)
     print(matches)
-    return render_template('/htmx/searchResults.html',matches=matches) 
+    return render_template('/htmx/searchResults.html',matches=matches ,node_id=node_id) 
 
 #---------- HTMX ------------# 
 @app.route('/delete_node/<node_id>', methods=['POST'])
