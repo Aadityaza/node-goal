@@ -1,7 +1,5 @@
-<ul class="absolute bg-slate-100 w-full space-y-1 p-4" id="#searchResult{{node_id}}">
-    {% for data in matches %}
-    <li hx-get="/link/{{data['source_id']}}/{{data['target_id']}}" hx-on="click" hx-target="#links{{data['source_id']}}"
-        class="cursor-pointer w-full p-2 border-b">{{data['content']}}</li>
+    {% for match in matches %}
+    <li hx-get="/link/{{match['source_id']}}/{{match['target_id']}}" hx-on="click" hx-target="#links{{['source_id']}}"
+        class="cursor-pointer w-full p-2 border-b">{{match['content']}}</li>
     {% endfor %}
 
-</ul>
