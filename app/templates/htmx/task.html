@@ -24,10 +24,10 @@
             </svg>
 
             <input type="text" name="search" class="w-full bg-white border  text-lg font-medium p-2"
-                hx-post="/search/{{data['id']}}" hx-trigger="keyup changed delay:500ms" hx-target="#searchReasult{{data['id']}}" hx-swap="outerHTML">
+                hx-post="/search/{{data['id']}}" hx-trigger="keyup changed delay:500ms" hx-target="#searchReasult{{data['id']}}" hx-swap="innerHTML">
         </div>
-        <ul class="" id="links{{data['id']}}"></ul>
-        <ul class="absolute bg-white " id="searchReasult{{data['id']}}">
+        <ul class="absolute w-full" id="links{{data['id']}}"></ul>
+        <ul class="absolute bg-white" id="searchReasult{{data['id']}}">
 
         </ul>
         <div class="w-full bg-slate-100 flex justify-end px-5 py-4 ">
