@@ -1,6 +1,6 @@
 from fuzzywuzzy import process
 
-def find_closest_words(target_word, dict_list, key, threshold=70, limit=5):
+def find_closest_words(target_word, dict_list, key, threshold=70, limit=1130):
     # Extract content and IDs from the specified key in each dictionary
     word_id_list = [(d["id"], d[key]) for d in dict_list]
     word_list = [word for _, word in word_id_list]

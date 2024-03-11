@@ -1,4 +1,7 @@
 /node_modules
 /venv
+.venv
 .idea/
 *.pyc
+lib
+lib64
