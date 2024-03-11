@@ -1,4 +1,4 @@
-from fuzzywuzzy import process
+from fuzzywuzzy import process, fuzz
 
 def find_closest_words(target_word, dict_list, key, threshold=70, limit=1130):
     # Extract content and IDs from the specified key in each dictionary
@@ -16,11 +16,15 @@ def find_closest_words(target_word, dict_list, key, threshold=70, limit=1130):
     
     return match
 
-# Example usage
 
-def match(target_word,data,id):
-  matches = find_closest_words(target_word, data["nodes"], key="content")
-  for m in matches:
-    m |= {"source_id":id}
-    print(m)
-  return matches
+def match(target_word, data, source_id):
+    matches = find_closest_words(target_word, data["nodes"], key="content")
+    word_id_list = [(d["id"], d["content"]) for d in data["nodes"]]  # Assuming id is available in the "id" key
+    for m in matches:
+        for id_val, content in word_id_list:
+            if content == m["content"]:
+                m["target_id"] = id_val
+                break
+        m["source_id"] = source_id
+        print(m)
+    return matches
