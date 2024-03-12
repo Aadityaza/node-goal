@@ -176,6 +176,14 @@ def delete(node_id):
     return render_template('/htmx/taskCards.html', nodes=graphdata['nodes'],links=graphdata['links'])
 #---------- HTMX ------------# 
 
+@app.route('/data')
+def data():
+    graph_manager = GraphManager(user_id=session['username'])
+    graph_view_instance = GraphView(graph_manager)
+    # Get the graph data
+    graphdata = graph_view_instance.get_graph_data()
+    return graphdata
+
 
 
 if __name__ == '__main__':
