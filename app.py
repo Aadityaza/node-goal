@@ -7,6 +7,8 @@ from flask import jsonify, session, Response
 from app.services.link import Link
 from app.services.user import *
 import ulid
+import networkx as nx
+
 
 app = Flask(__name__, template_folder='app/templates', static_folder='app/static')
 bcrypt = Bcrypt(app)
@@ -176,13 +178,19 @@ def delete(node_id):
     return render_template('/htmx/taskCards.html', nodes=graphdata['nodes'],links=graphdata['links'])
 #---------- HTMX ------------# 
 
-@app.route('/data')
+@app.route('/node_importance')
 def data():
     graph_manager = GraphManager(user_id=session['username'])
     graph_view_instance = GraphView(graph_manager)
     # Get the graph data
-    graphdata = graph_view_instance.get_graph_data()
-    return graphdata
+    data = graph_view_instance.get_graph_data()
+    G = nx.DiGraph()
+    for node_data in data['nodes']:
+        G.add_node(node_data['id'])
+    for link in data['links']:
+        G.add_edge(link['source'], link['target'])
+    pagerank_scores = nx.pagerank(G)
+    return pagerank_scores
 
 
 
