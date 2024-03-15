@@ -1,5 +1,6 @@
     {% for match in matches %}
-    <li hx-get="/link/{{match['source_id']}}/{{match['target_id']}}" hx-on="click" hx-target="#links{{['source_id']}}"
+    <li hx-get="/link/{{match['source_id']}}/{{match['target_id']}}" hx-on="click" hx-target="#links{{match['source_id']}}"
         class="cursor-pointer w-full p-2 border-b">{{match['content']}}</li>
     {% endfor %}
+
 
