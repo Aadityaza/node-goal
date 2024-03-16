@@ -1,12 +1,17 @@
 {%include '/header.html' %}
-<div class="flex justify-center items-center h-screen ">
-    <div class="flex flex-col gap-2 justify-center">
-        <h1 class="text-center text-3xl">Welcome to <strong> Y </strong> </h1>
-        <p class="text-center">Find out your life's purpose, set better goals with <b>AI</b></p>
-        <div class="flex gap-2 justify-center">
-            <a href="/login" class="bg-slate-900 px-4 py-2 text-slate-50 rounded-md w-fit">Login</a>
-            <a href="/register" class="bg-slate-900 px-4 py-2 text-slate-50 rounded-md w-fit">Sign Up</a>
+<div class="flex flex-col mt-20 h-screen max-w-screen-sm mx-auto" id="loginTarget">
+    <div class="flex flex-col gap-4 border-l-2 border-l-neutral-400 p-5 ">
+        <h1 class="text-4xl">Welcome to <strong> Y </strong> </h1>
+        <p class="grid ">
+            <strong>Why?</strong>
+            <span class=""> to find out your purpose in <strong>Life</strong> </span>
+            <span>with the help of <strong>AI</strong> </span>
+        </p>
+        <div class="flex gap-2">
+            <button hx-get="/login" class="btn" hx-target="#form">Login</button>
+            <button hx-get="/register" class="btn" hx-target="#form">Sign Up</button>
         </div>
+    <div class="" id="form"></div>
     </div>
 </div>
 {%include '/footer.html' %}

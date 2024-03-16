@@ -27,7 +27,7 @@ def login():
 
             return redirect(url_for('dashboard'))
         else:
-            return 'Invalid username or password', 401
+            return 'Invalid username or password'
 
     return render_template('login.html')
 
@@ -48,10 +48,9 @@ def register():
         # Check if the username already existsnodes=graph_manager.nodes.values(), graph_data=graphdata
         new_user = User(username, password_hash)
         save_user(new_user)
+        return 'User Created Successfully' 
 
-        return redirect(url_for('login'))
-
-    return render_template('register.html')
+    #return render_template('register.html')
 
 
 @app.route('/logout')
