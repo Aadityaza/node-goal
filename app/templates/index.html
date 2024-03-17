@@ -1,6 +1,6 @@
 {%include '/header.html' %}
 <div class="flex flex-col mt-20 h-screen max-w-screen-sm mx-auto" id="loginTarget">
-    <div class="flex flex-col gap-4 border-l-2 border-l-neutral-400 p-5 ">
+    <div x-data="{login : true}" class="flex flex-col gap-4 border-l-2 border-l-neutral-400 p-5 ">
         <h1 class="text-4xl">Welcome to <strong> Y </strong> </h1>
         <p class="grid ">
             <strong>Why?</strong>
@@ -8,10 +8,46 @@
             <span>with the help of <strong>AI</strong> </span>
         </p>
         <div class="flex gap-2">
-            <button hx-get="/login" class="btn" hx-target="#form">Login</button>
-            <button hx-get="/register" class="btn" hx-target="#form">Sign Up</button>
+            <button @click="login = true" class="hover:bg-neutral-300 px-4 py-2 text-neutral-900 rounded-md w-fit" :class="login ? 'bg-neutral-200': 'bg-neutral-400'" >Login</button>
+            <button @click="login = false" class=" hover:bg-neutral-300 px-4 py-2 text-neutral-900 rounded-md w-fit" :class=" !login ? 'bg-neutral-200': 'bg-neutral-400'" >Sign Up</button>
         </div>
-    <div class="" id="form"></div>
+
+        <div x-show="login">
+            <h2 class="text-3xl mt-5">Login</h2>
+            <form action="/login" method="post" hx-target="#loginTarget" hx-swap="outerHTML"
+                class="flex flex-col gap-2">
+                <label for="login_username">Username:</label>
+                <input type="text" id="login_username" name="username"
+                    class="w-1/2 p-1 rounded bg-neutral-300 outline-none border-none focus:outline-amber-400"
+                    autocomplete="username" required autofocus>
+                <div id="usernameError" class="text-red-400"></div>
+                <label for="login_password">Password:</label>
+                <input type="password" id="login_password" name="password"
+                    class="w-1/2 p-1 rounded bg-neutral-300 outline-none border-none focus:outline-amber-400"
+                    autocomplete="password" required>
+                <div id="passwordError" class="text-red-400"></div>
+                <button type="submit" class="btn">Login</button>
+            </form>
+        </div>
+        <div x-show="!login">
+            <h2 class="text-3xl mt-5">Sign Up</h2>
+            <form hx-post="/register" method="post" hx-target="#registerMessage" class="flex flex-col gap-2">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" hx-post="/username-validation" hx-target="#usernameValidation" hx-trigger="blur"
+                    class="w-1/2 p-1 rounded bg-neutral-300 outline-none border-none focus:outline-amber-400"
+                    autocomplete="username" required autofocus>
+                    <span class="text-red-400" id="usernameValidation"  ></span>
+                <small class="text-neutral-500">Username must be 3-20 characters long.</small>
+                <label for="password">Password:</label>
+                <input hx-post="/user-password-validation" hx-target="#userPasswordValidation" type="password" id="password" name="password"
+                    class="w-1/2 p-1 rounded bg-neutral-300 outline-none border-none focus:outline-amber-400"
+                    autocomplete="password" required>
+                    <span class="text-red-400" id="userPasswordValidation"  ></span>
+                <small class="text-neutral-500">Password must be at least 8 characters long.</small>
+                <button type="submit" class="btn">Sign Up</button>
+            </form>
+            <p id="registerMessage" class="text-green-400"></p>
+        </div>
     </div>
 </div>
 {%include '/footer.html' %}
