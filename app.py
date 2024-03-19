@@ -82,6 +82,23 @@ def index():
         return redirect(url_for('dashboard'))
     return render_template('index.html')
 
+def map_score_to_radius(score, min_radius, max_radius):
+    # Ensure score is within bounds
+    score = max(0, min(1, score))
+    
+    # Calculate radius using linear interpolation
+    radius = min_radius + (max_radius - min_radius) * score
+    
+    return radius
+
+def map_score_to_radius(score, min_radius, max_radius):
+    # Ensure score is within bounds
+    score = max(0, min(1, score))
+    
+    # Calculate radius using linear interpolation
+    radius = min_radius + (max_radius - min_radius) * score
+    
+    return radius
 
 @app.route('/dashboard')
 def dashboard():
@@ -90,11 +107,27 @@ def dashboard():
 
     graph_manager = GraphManager(user_id=session['username'])
     graph_view_instance = GraphView(graph_manager)
-
     # Get the graph data
     graphdata = graph_view_instance.get_graph_data()
     # Render the index template with both nodes and graph data
-    return render_template('dashboard.html', nodes=graph_manager.nodes.values(), graph_data=graphdata)
+  
+    G = nx.DiGraph()
+    for data in graphdata['nodes']:
+        G.add_node(data['id'])
+    for link in graphdata['links']:
+        G.add_edge(link['source'], link['target'])
+
+    pagerank_scores = nx.pagerank(G)
+    min_radius = 4
+    max_radius = 10
+
+    radius_dict = {}
+
+    for key, score in pagerank_scores.items():
+        radius = map_score_to_radius(score, min_radius, max_radius)
+        radius_dict[key] = radius
+
+    return render_template('dashboard.html', nodes=graph_manager.nodes.values(), graph_data=graphdata ,radius_dict=radius_dict)
 
 # Please Migrate all those functions wrapped with HTMX to it's own .py file
 #---------- HTMX ------------# 
