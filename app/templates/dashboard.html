@@ -4,13 +4,11 @@
 <head>
   <title>Dashboard</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
-
   <script src="https://d3js.org/d3.v6.min.js"></script>
   <script src="{{ url_for('static', filename='js/htmx.min.js') }}"></script>
 </head>
 
-<body class="p-7">
+<body class="font-['outfit'] bg-neutral-900 text-neutral-400 p-5">
   <!-- Logout Button -->
   <nav class="logout-nav">
     <a href="{{ url_for('logout') }}" title="Logout">
