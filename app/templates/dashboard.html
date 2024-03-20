@@ -150,9 +150,10 @@
       
 
       // Update the simulation on each tick
-      simulation.on("tick", () => {
+      simulation.on("tick", (e) => {
+
         link
-          .attr("x1", (d) => Math.max(radius, Math.min(width - radius, d.source.x)))
+          .attr("x1", (d) => { console.log(d); return Math.max(radius, Math.min(width - radius, d.source.x))})
           .attr("y1", (d) => Math.max(radius, Math.min(height - radius, d.source.y)))
           .attr("x2", (d) => Math.max(radius, Math.min(width - radius, d.target.x)))
           .attr("y2", (d) => Math.max(radius, Math.min(height - radius, d.target.y)));
