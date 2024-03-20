@@ -118,14 +118,14 @@ def dashboard():
         G.add_edge(link['source'], link['target'])
 
     pagerank_scores = nx.pagerank(G)
-    min_radius = 4
-    max_radius = 10
+    min_radius = 3
+    max_radius = 30
 
     radius_dict = {}
 
     for key, score in pagerank_scores.items():
         radius = map_score_to_radius(score, min_radius, max_radius)
-        radius_dict[key] = radius
+        radius_dict[key] = str(radius)
 
     return render_template('dashboard.html', nodes=graph_manager.nodes.values(), graph_data=graphdata ,radius_dict=radius_dict)
 
@@ -138,7 +138,8 @@ def form():
     response = None
 
     if request.method == 'POST':
-        node_id = str(ulid.new().int)  # Generate a ULID
+        desired_length = 15
+        node_id = str(ulid.new().int)[:desired_length]  # Generate a ULID
         content = request.form['content']
 
         new_node = Node(int(node_id), content, type='task')  # Use ULID instead of incremental ID
