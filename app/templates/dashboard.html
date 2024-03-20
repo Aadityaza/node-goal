@@ -34,7 +34,7 @@
           Add
         </button>
       </form>
-
+      
       <ul class="space-y-5 py-5" hx-get="/htmxGetAllTasks" hx-trigger="load" hx-swap="outerHTML">
         Loading Tasks ....
       </ul>
@@ -72,6 +72,21 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     var simulation;
 
     // Get the dimensions of the container
@@ -99,6 +114,9 @@
         .force("charge", d3.forceManyBody())
         .force("center", d3.forceCenter(width / 2, height / 2));
 
+      // Define the radius for the nodes
+      var radius = 10;
+      
       // Create the link lines
       var link = svg
         .append("g")
@@ -107,7 +125,8 @@
         .data(links)
         .enter()
         .append("line")
-        .attr("class", "link");
+        .attr("class", "link")
+        .style("stroke", "#A3A3A3");
 
       // Create the node circles
       var node = svg
@@ -118,7 +137,8 @@
         .enter()
         .append("circle")
         .attr("class", "node")
-        .attr("r", 4)
+        .attr("r", radius)
+        .style("fill", "#A3A3A3")
         .call(
           d3
             .drag()
@@ -127,8 +147,7 @@
             .on("end", dragended)
         );
 
-      // Define the radius for the nodes
-      var radius = 4;
+      
 
       // Update the simulation on each tick
       simulation.on("tick", () => {
@@ -142,6 +161,7 @@
         node
           .attr("cx", (d) => d.x = Math.max(radius, Math.min(width - radius, d.x)))
           .attr("cy", (d) => d.y = Math.max(radius, Math.min(height - radius, d.y)));
+          
       });
     }
 
@@ -163,9 +183,12 @@
     }
 
     // Assume graph_data is passed in correctly from Flask as JSON embedded in the HTML
-    var graph_data = {{graph_data | tojson | safe }};
+    var radius_dict = {{ radius_dict | tojson | safe }};
+    var graph_data = {{ graph_data | tojson | safe }};
     console.log(graph_data.nodes, graph_data.links)
-    generateGraph(graph_data.nodes, graph_data.links);
+    console.log("ayo hai guys")
+    console.log(radius_dict)
+    generateGraph(graph_data.nodes, graph_data.links,radius_dict);
   </script>
 </body>
 
