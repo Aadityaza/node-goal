@@ -104,7 +104,12 @@
     function generateGraph(inputNodes, inputLinks) {
       // Convert the input data into d3's expected format
       var nodes = inputNodes.map((d) => Object.assign({}, d));
+      console.log("yeta hera ta guys")
+      console.log(nodes)
+      
       var links = inputLinks.map((d) => Object.assign({}, d));
+      console.log("feri yeta hera ta guys")
+      console.log(links)
       // Create the simulation with nodes and links
       simulation = d3
         .forceSimulation(nodes)
@@ -148,11 +153,12 @@
             .on("end", dragended)
         );
 
-      
+        
 
       // Update the simulation on each tick
       simulation.on("tick", () => {
         link
+        
           .attr("x1", (d) => Math.max(radius, Math.min(width - radius, d.source.x)))
           .attr("y1", (d) => Math.max(radius, Math.min(height - radius, d.source.y)))
           .attr("x2", (d) => Math.max(radius, Math.min(width - radius, d.target.x)))
@@ -160,8 +166,10 @@
 
         // Keep the nodes inside the graph container
         node
-          .attr("cx", (d) => d.x = Math.max(radius, Math.min(width - radius, d.x)))
-          .attr("cy", (d) => d.y = Math.max(radius, Math.min(height - radius, d.y)));
+  
+          .attr("cx", (d) => d.x =  Math.max(radius, Math.min(width - radius, d.x)))
+          .attr("cy", (d) => d.y = Math.max(radius, Math.min(height - radius, d.y)))
+          .attr("r", (d) => radius_dict[d.id]);
           
       });
     }
