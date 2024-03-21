@@ -77,8 +77,6 @@
       }
     });
 
-
- 
     // Get the dimensions of the container
     var graphContainer = document.querySelector("#graph-container");
     
@@ -172,10 +170,7 @@
       var radius = 10;
       // Update the simulation on each tick
         simulation.on("tick", () => {
-          
-          
         link
-        
           .attr("x1", (d) => Math.max(radius, Math.min(width - radius, d.source.x)))
           .attr("y1", (d) => Math.max(radius, Math.min(height - radius, d.source.y)))
           .attr("x2", (d) => Math.max(radius, Math.min(width - radius, d.target.x)))
