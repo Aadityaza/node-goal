@@ -46,8 +46,8 @@ def dashboard():
         G.add_edge(link['source'], link['target'])
 
     pagerank_scores = nx.pagerank(G)
-    min_radius = 3
-    max_radius = 30
+    min_radius = 10
+    max_radius = 50
 
     radius_dict = {}
 
