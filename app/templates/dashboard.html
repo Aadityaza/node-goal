@@ -19,7 +19,7 @@
 <body class="font-['outfit'] bg-neutral-900 text-neutral-400 p-5">
   <!-- Logout Button -->
   <nav class="">
-    <a href="{{ url_for('logout') }}" title="Logout">
+    <a href="{{ url_for('auth.logout') }}" title="Logout">
       <i class="fa fa-sign-out-alt"></i>
     </a>
   </nav>
@@ -54,11 +54,10 @@
         const nodesString = tasks.getAttribute('data-nodes');
         const linksString = tasks.getAttribute('data-links');
 
-        console.log("line 60:", linksString)
         // Replace single quotes with double quotes to make it valid JSON
         const validNodesString = nodesString.replace(/'/g, '"');
         const validLinksString = linksString.replace(/'/g, '"');
-        console.log("line 62:", validLinksString)
+  
         // Parse the JSON strings into arrays
         const nodesArray = JSON.parse(validNodesString);
         const linksArray = JSON.parse(validLinksString);
@@ -103,24 +102,16 @@
     function generateGraph(inputNodes, inputLinks) {
       // Convert the input data into d3's expected format
       var nodes = inputNodes.map((d) => Object.assign({}, d));
-      console.log("yeta hera ta guys")
-      console.log(nodes)
-      
+   
       var links = inputLinks.map((d) => Object.assign({}, d));
-      console.log("feri yeta hera ta guys")
-      console.log(links)
-      // Create the simulation with nodes and links
+  // Create the simulation with nodes and links
       simulation = d3
         .forceSimulation(nodes)
-        .force(
-          "link",
-          d3.forceLink(links).id((d) => d.id)
-        )
+        .force("link",d3.forceLink(links).id((d) => d.id))
         .force("charge", d3.forceManyBody())
         .force("center", d3.forceCenter(width / 2, height / 2));
 
-      // Define the radius for the nodes
-      var radius = 10;
+
       
       // Create the link lines
       var link = svg
@@ -133,6 +124,7 @@
         .attr("class", "link")
         .style("stroke", "#A3A3A3");
 
+       
       // Create the node circles
       var node = svg
         .append("g")
@@ -142,7 +134,6 @@
         .enter()
         .append("circle")
         .attr("class", "node")
-        .attr("r", radius)
         .style("fill", "#A3A3A3")
         .call(
           d3
@@ -150,10 +141,27 @@
             .on("start", dragstarted)
             .on("drag", dragged)
             .on("end", dragended)
-        );
+        )
 
+        // Create a group for the labels
+        var labels = svg.append("g")
+            .attr("class", "labels");
+        var nodeLabels = labels.selectAll("text")
+          .data(nodes)
+          .enter()
+          .append("text")
+          .attr("class", "node-label")
+          .attr("x", 1)
+          .attr("y", 1)
+          .style("font-size", "8px") // Customize font size as needed
+          .style("fill", "#A3A3A3"); // Customize label color
+           
+        
         
 
+        
+      
+      var radius = 10;
       // Update the simulation on each tick
       simulation.on("tick", () => {
         link
@@ -168,8 +176,17 @@
   
           .attr("cx", (d) => d.x =  Math.max(radius, Math.min(width - radius, d.x)))
           .attr("cy", (d) => d.y = Math.max(radius, Math.min(height - radius, d.y)))
-          .attr("r", (d) => radius_dict[d.id]);
-          
+          .attr("r", (d) => radius_dict[d.id])
+          .append("text") ;
+
+          nodeLabels
+          .attr("x",(d) => {
+              // console.log("Value of d:", d.content);
+              return d.x = Math.max(radius, Math.min(width - radius, d.x)) +radius;
+          })
+          .attr("y",(d) => d.y = Math.max(radius, Math.min(height - radius, d.y)))
+          .text((d) => d.content);
+
       });
     }
 
@@ -190,14 +207,20 @@
       d.fy = null;
     }
 
+    // // Get the svg element and its dimensions
+    // var svg = d3.select("svg"),
+    //         width = +svg.attr("width"),
+    //         height = +svg.attr("height");
+
     // Assume graph_data is passed in correctly from Flask as JSON embedded in the HTML
-    var radius_dict = {{ radius_dict | tojson | safe }};
-    var graph_data = {{ graph_data | tojson | safe }};
+    var radius_dict = JSON.parse('{{ radius_dict | tojson | safe }}');
+    var graph_data = JSON.parse('{{ graph_data | tojson | safe }}');
     console.log(graph_data.nodes, graph_data.links)
-    console.log("ayo hai guys")
-    console.log(radius_dict)
+
     generateGraph(graph_data.nodes, graph_data.links,radius_dict);
   </script>
 </body>
 
 </html>
+
+
