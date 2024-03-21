@@ -1,38 +1,56 @@
-<details class="group [&_summary::-webkit-details-marker]:hidden">
-    <summary class="flex cursor-pointer items-center justify-between gap-1.5 rounded-lg bg-neutral-800 p-4 text-gray-900">
-        <h2 class="font-medium flex items-center gap-2">
-            <input type="checkbox" class="size-4 text-neutral-400  accent-neutral-500">
+<article x-data="{open:false}">
+    <div x-show="!open"
+        class="flex cursor-pointer items-center justify-between gap-1 5 rounded-lg bg-neutral-800 p-4 text-neutral-300">
+        <div class="flex items-center gap-2">
+            <input type="checkbox" class="size-4 text-neutral-400  accent-neutral-500 bg-neutral-300 rounded">
+            <span class="text-lg">{{data['content']}}</span>
+        </div>
+        <button class="text-2xl p-2 px-4 space-y-1 hover:bg-neutral-700 rounded duration-200" @click="open = true">
+            <div class="size-1 rounded bg-neutral-400 p-[1px]"></div>
+            <div class="size-1 rounded bg-neutral-400 p-[1px]"></div>
+            <div class="size-1 rounded bg-neutral-400 p-[1px]"></div>
+        </button>
 
-            <input type="text" name="content" class="w-full bg-neutral-800 text-lg font-medium p-2 text-neutral-300 focus:outline-none"
+    </div>
+    <div x-show="open" @click.outside="open = false"
+        class="flex flex-col cursor-pointer  gap-4 rounded-lg bg-neutral-800 p-4 text-neutral-300">
+        <h2 class="font-medium flex items-center gap-2">
+            <input type="text" name="content"
+                class="w-full bg-neutral-700 rounded text-lg font-medium p-2 text-neutral-300 focus:outline-none"
                 id="singleTask{{data['id']}}" value="{{data['content']}}" hx-post="/form_graph/{{data['id']}}"
                 hx-trigger="keyup changed delay:1000ms">
         </h2>
-        <svg <svg class="size-5 shrink-0 transition duration-300 group-open:-rotate-180 text-neutral-300 "
-            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-        </svg>
-    </summary>
+        <strong >Link</strong>
+        <ul class="" id="links{{data['id']}}"></ul>
 
-    <div class="relative bg-neutral-800 ">
-        <!-- Search form -->
-        <div class="flex items-center gap-2 m-2 bg-neutral-700 ">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                class="feather feather-search">
-                <circle cx="11" cy="11" r="8"></circle>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
-
-            <input type="text" name="search" class="w-full border-none focus:outline-none text-lg font-medium p-2 bg-neutral-600 "
-                hx-post="/search/{{data['id']}}" hx-trigger="keyup changed delay:500ms" hx-target="#searchReasult{{data['id']}}" hx-swap="innerHTML">
+        <div class="relative">
+            <div class="flex rounded">
+                <div class="flex justify-center items-center p-2 bg-neutral-700 rounded-l">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="feather feather-search">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                </div>
+                <div class="relative w-full">
+                    <input type="text" name="search"
+                        class="w-full bg-neutral-700 rounded-r border-none focus:outline-none text-lg font-medium p-2 "
+                        hx-post="/search/{{data['id']}}" hx-trigger="keyup changed delay:500ms"
+                        hx-target="#searchReasult{{data['id']}}" hx-swap="innerHTML">
+                </div>
+            </div>
+            <ul class="absolute  bg-neutral-700  w-full" id="searchReasult{{data['id']}}"></ul>
         </div>
-        <ul class="absolute w-full" id="links{{data['id']}}"></ul>
-        <ul class="absolute bg-white" id="searchReasult{{data['id']}}">
 
-        </ul>
-        <div class="w-full bg-neutral-800 flex justify-end px-5 py-4 ">
-            <button class="bg-red-800 px-4 py-2 text-neutral-50 rounded-md" hx-POST="/delete_node/{{data['id']}}"
-                hx-target="#tasks">Delete </button>
+        <div class="flex justify-end gap-2">
+            <button @click="open=false" class="p-2 px-4 space-y-1 hover:bg-neutral-700 rounded duration-200">
+                Cancel
+            </button>
+
+            <button class="p-2 px-4 space-y-1 bg-red-800 hover:bg-red-700 rounded duration-200"
+                hx-POST="/delete_node/{{data['id']}}" hx-target="#tasks">Delete </button>
         </div>
+
     </div>
-</details>
+</article>
