@@ -2,78 +2,22 @@ from flask_bcrypt import Bcrypt
 from app.utils.graph_manager import *
 from app.utils.graph_view import *
 import app.utils.search as search
+from app.utils.node_utils import *
 from flask import Flask, render_template, request, redirect, url_for
 from flask import jsonify, session, Response
 from app.services.link import Link
 from app.services.user import *
 import ulid
 import networkx as nx
-
+from app.routes.auth_routes import auth as auth_app
 
 app = Flask(__name__, template_folder='app/templates', static_folder='app/static')
+app.register_blueprint(auth_app)
+
 bcrypt = Bcrypt(app)
 app.secret_key = 'your_secret_key'
 
 
-
-
-@app.route('/login', methods=['POST'])
-def login():
-    username = request.form['username']
-    password = request.form['password']
-    users = load_users()
-
-    if username in users and bcrypt.check_password_hash(users[username], password):
-        session['username'] = username
-        return redirect(url_for('dashboard'))
-    else:
-        return 'Invalid username or password <button @click="login = true" class="bg-neutral-400 hover:bg-neutral-300 px-4 py-2 text-neutral-900 rounded-md w-fit" >Back to Login</button> '
-
-
-@app.route('/register', methods=['POST'])
-def register():
-    username = request.form['username']
-    password = request.form['password']
-
-    # Load existing users
-    users = load_users()
-    # Check if the username already exists
-    if username in users:
-        return 'Username already exists  '
-    password_hash = bcrypt.generate_password_hash(password).decode('utf-8')
-    # Check if the username already existsnodes=graph_manager.nodes.values(), graph_data=graphdata
-    new_user = User(username, password_hash)
-    save_user(new_user)
-
-    return 'User Created Successfully <button @click="login = true" class="bg-neutral-400 hover:bg-neutral-300 px-4 py-2 text-neutral-900 rounded-md w-fit" >Back to Login</button>' 
-
-# Register form Validation Starts ------------------------------
-@app.route('/username-validation', methods=['POST'])
-def userValidation():
-    username = request.form['username']
-    # Load existing users
-    users = load_users()
-    if len(username) < 3:
-        return 'Username cannot be less then 3 characters'
-    # Check if the username already exists
-    if username in users:
-        return 'Username already exists'
-
-    return ""
-
-@app.route('/user-password-validation', methods=['POST'])
-def userPasswordValidation():
-    password = request.form['password']
-    if len(password) < 8:
-        return 'password cannot be less then 8 characters'
-    return ""
-# Register Form Validation Ends ------------------------------
-
-
-@app.route('/logout')
-def logout():
-    session.pop('username', None)
-    return redirect(url_for('index'))
 
 
 @app.route('/')
@@ -82,28 +26,12 @@ def index():
         return redirect(url_for('dashboard'))
     return render_template('index.html')
 
-def map_score_to_radius(score, min_radius, max_radius):
-    # Ensure score is within bounds
-    score = max(0, min(1, score))
-    
-    # Calculate radius using linear interpolation
-    radius = min_radius + (max_radius - min_radius) * score
-    
-    return radius
 
-def map_score_to_radius(score, min_radius, max_radius):
-    # Ensure score is within bounds
-    score = max(0, min(1, score))
-    
-    # Calculate radius using linear interpolation
-    radius = min_radius + (max_radius - min_radius) * score
-    
-    return radius
 
 @app.route('/dashboard')
 def dashboard():
     if 'username' not in session:
-        return redirect(url_for('login'))
+        return redirect(url_for('auth.login'))
 
     graph_manager = GraphManager(user_id=session['username'])
     graph_view_instance = GraphView(graph_manager)
@@ -118,8 +46,8 @@ def dashboard():
         G.add_edge(link['source'], link['target'])
 
     pagerank_scores = nx.pagerank(G)
-    min_radius = 3
-    max_radius = 30
+    min_radius = 10
+    max_radius = 50
 
     radius_dict = {}
 
@@ -177,22 +105,6 @@ def getAllTasks():
 
 
 
-
-
-#--------- I think this below is not being used, If so you can remove it ----------#
-@app.route('/graph')
-def graph_view():
-    graph_manager = GraphManager(user_id=session['username'])
-    graph_view_instance = GraphView(graph_manager)
-
-    # Get graph data for the frontend from the GraphView instance
-    graph_data = graph_view_instance.get_graph_data()
-    # Render the graph template with the graph data
-    return render_template('graph.html', graph_data=graph_data)
-#--------- I think this above is not being used, If so you can remove it ----------#
-
-
-
 #---------- HTMX ------------# 
 @app.route('/link/<node_id>/<target_id>', methods=['GET'])
 def link(node_id, target_id):
@@ -239,7 +151,6 @@ def data():
         G.add_edge(link['source'], link['target'])
     pagerank_scores = nx.pagerank(G)
     return pagerank_scores
-
 
 
 if __name__ == '__main__':
