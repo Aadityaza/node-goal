@@ -110,7 +110,40 @@ def getAllTasks():
 def link(node_id, target_id):
     graph_manager = GraphManager(user_id=session['username'])
     graph_manager.add_link(node_id, target_id)
-    return 'Linked hai guys'
+    graph_view_instance = GraphView(graph_manager)
+    graphdata = graph_view_instance.get_graph_data()
+    specified_id = node_id
+    filtered_nodes = [node for node in graphdata['nodes'] if node['id'] == specified_id]
+    filtered_links = [link for link in graphdata['links'] if link['source'] == specified_id]
+
+    filtered_data = {
+        "nodes": filtered_nodes,
+        "links": filtered_links
+    }
+    return filtered_data
+
+
+# @app.route('/test', methods=['GET'])
+# def test():
+#     graph_manager = GraphManager(user_id=session['username'])
+#     graph_view_instance = GraphView(graph_manager)
+#     graphdata = graph_view_instance.get_graph_data()
+#     return graphdata
+
+@app.route('/linked-content/<id>', methods=['GET'])
+def test(id):
+    graph_manager = GraphManager(user_id=session['username'])
+    graph_view_instance = GraphView(graph_manager)
+    specified_id = int(id)
+    graphdata = graph_view_instance.get_graph_data()
+    self_nodes = [node for node in graphdata['nodes'] if node['id'] == specified_id]
+    linked_nodes = [{"id":link["target"],"content":get_content_by_id(graphdata, link["target"])} for link in graphdata['links'] if link['source'] == specified_id]
+
+    filtered_data = {
+        "self": self_nodes,
+        "linked": linked_nodes
+    }
+    return filtered_data
 #---------- HTMX ------------# 
 
 

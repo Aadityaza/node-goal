@@ -68,3 +68,11 @@ class Node:
 
         return node
 
+def get_content_by_id(data, target_id):
+    # Iterate through nodes to find the node with the matching ID
+    for node in data['nodes']:
+        if node['id'] == target_id:
+            return node['content']
+    
+    # If no matching ID found
+    return None
