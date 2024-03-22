@@ -39,8 +39,8 @@ class GraphManager:
         self.save_nodes()
 
     def add_link(self, source_id, target_id):
-        source_id= int(source_id)
-        target_id= int(target_id)
+        source_id = int(source_id)
+        target_id = int(target_id)
         if source_id not in self.nodes:
             raise ValueError(f"Node with id {source_id} does not exist.")
         if target_id not in self.nodes:
@@ -80,6 +80,11 @@ class GraphManager:
     def delete_node(self, node_id):
         if node_id not in self.nodes:
             raise ValueError(f"Node with id {node_id} does not exist.")
+
+        # Remove links to and from the deleted node
+        for node in self.nodes.values():
+            node.links = [link for link in node.links if link.target_id != node_id and link.source_id != node_id]
+
         del self.nodes[node_id]
         self.save_nodes()
 

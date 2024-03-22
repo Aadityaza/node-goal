@@ -187,9 +187,9 @@
           nodeLabels
           .attr("x",(d) => {
               // console.log("Value of d:", d.content);
-              return d.x = Math.max(radius, Math.min(width - radius, d.x)) +radius;
+              return d.x = Math.max(radius, Math.min(width - radius, d.x)) +20;
           })
-          .attr("y",(d) => d.y = Math.max(radius, Math.min(height - radius, d.y))+radius)
+          .attr("y",(d) => d.y = Math.max(radius, Math.min(height - radius, d.y))+20)
           .text((d) => d.content);
       });
 

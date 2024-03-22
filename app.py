@@ -63,7 +63,6 @@ def dashboard():
 def form():
     graph_manager = GraphManager(user_id=session['username'])
     graph_view_instance = GraphView(graph_manager)
-    response = None
 
     if request.method == 'POST':
         desired_length = 15
@@ -112,13 +111,11 @@ def link(node_id, target_id):
     graph_manager.add_link(node_id, target_id)
     graph_view_instance = GraphView(graph_manager)
     graphdata = graph_view_instance.get_graph_data()
-    specified_id = node_id
-    filtered_nodes = [node for node in graphdata['nodes'] if node['id'] == specified_id]
-    filtered_links = [link for link in graphdata['links'] if link['source'] == specified_id]
+    specified_id = int(node_id)
+    linked_nodes = [{"id":link["target"],"content":get_content_by_id(graphdata, link["target"])} for link in graphdata['links'] if link['source'] == specified_id]
 
     filtered_data = {
-        "nodes": filtered_nodes,
-        "links": filtered_links
+         "linked": linked_nodes
     }
     return filtered_data
 
