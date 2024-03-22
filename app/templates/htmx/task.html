@@ -21,7 +21,14 @@
                 hx-trigger="keyup changed delay:1000ms">
         </h2>
         <strong >Link</strong>
-        <ul class="" id="links{{data['id']}}"></ul>
+        <ul class="" id="links{{data['id']}}">
+            hello
+            {{links}}
+            {% for link in links %}
+            <li>These are links</li>
+            {% endfor %}
+
+        </ul>
 
         <div class="relative">
             <div class="flex rounded">

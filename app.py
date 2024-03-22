@@ -75,7 +75,7 @@ def form():
 
         # Get the graph data
         graphdata = graph_view_instance.get_graph_data()
-    return render_template('/htmx/taskCards.html', nodes=graphdata['nodes'], links=graphdata['links'], hello="hello")#---------- HTMX ------------#
+    return render_template('/htmx/taskCards.html', nodes=graphdata['nodes'], links=graphdata['links'] )#---------- HTMX ------------#
 #---------- HTMX ------------#
 
 
@@ -100,7 +100,7 @@ def getAllTasks():
     # Get the graph data
     graphdata = graph_view_instance.get_graph_data()
         
-    return render_template('/htmx/initialTaskCards.html', nodes=graphdata['nodes'], hello='helloWorld' )
+    return render_template('/htmx/initialTaskCards.html', nodes=graphdata['nodes'],links=graphdata['links'])
 #---------- HTMX ------------# 
 
 
