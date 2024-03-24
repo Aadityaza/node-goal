@@ -4,5 +4,5 @@
     class="cursor-pointer w-full p-2 border-b">{{match['content']}}</li>
 {% endfor %}
 {% else %}
-<li>{{word}}</li>
+<li hx-get="/create-an-link/{{node_id}}/{{word}}" hx-on="click" hx-target="#links{{node_id}}">{{word}}</li>
 {% endif %}

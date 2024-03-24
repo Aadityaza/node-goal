@@ -119,27 +119,26 @@ def link(node_id, target_id):
     }
     return filtered_data
 
-@app.route('/create-an-link/<id>', methods=['POST'])
-def create_an_link(id):
+@app.route('/create-an-link/<id>/<content>', methods=['GET'])
+def create_an_link(id,content):
     graph_manager = GraphManager(user_id=session['username'])
     graph_view_instance = GraphView(graph_manager)
     response = None
 # create new nodes
 # link the new nodes it with id
 # return all links id has
-    if request.method == 'POST':
+    if request.method == 'GET':
         desired_length = 15
         node_id = str(ulid.new().int)[:desired_length]  # Generate a ULID
-        content = request.form['content']
 
         new_node = Node(int(node_id), content, type='task')  # Use ULID instead of incremental ID
         graph_manager.add_node(new_node)
 
         result = link(id,node_id)
-        print(result)
+        print("thsi is result", result)
         # Get the graph data
         graphdata = graph_view_instance.get_graph_data()
-    return render_template('/htmx/taskCards.html', data=result  )#---------- HTMX ------------#
+    return render_template('/htmx/renderLinks.html', data=result ,node_id=id  )#---------- HTMX ------------#
 
 
 # @app.route('/test', methods=['GET'])

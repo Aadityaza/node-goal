@@ -6,9 +6,7 @@
 </h2>
 <strong class="text-lg">Link</strong>
 <ul class="" id="links{{data.self.id}}">
-    {% for data in data.linked %}
-    <li> this is test</li>
-    {%endfor%}
+    {% include '/htmx/renderLinks.html'  %}
 </ul>
 
 <div class="relative">
