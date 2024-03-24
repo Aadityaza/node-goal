@@ -117,6 +117,20 @@ def link(node_id, target_id):
     filtered_data = {
          "linked": linked_nodes
     }
+    return render_template('/htmx/renderLinks.html', data=filtered_data ,node_id=node_id  )#---------- HTMX ------------#
+
+
+def link_b(node_id, target_id):
+    graph_manager = GraphManager(user_id=session['username'])
+    graph_manager.add_link(node_id, target_id)
+    graph_view_instance = GraphView(graph_manager)
+    graphdata = graph_view_instance.get_graph_data()
+    specified_id = int(node_id)
+    linked_nodes = [{"id":link["target"],"content":get_content_by_id(graphdata, link["target"])} for link in graphdata['links'] if link['source'] == specified_id]
+
+    filtered_data = {
+         "linked": linked_nodes
+    }
     return filtered_data
 
 @app.route('/create-an-link/<id>/<content>', methods=['GET'])
@@ -124,9 +138,6 @@ def create_an_link(id,content):
     graph_manager = GraphManager(user_id=session['username'])
     graph_view_instance = GraphView(graph_manager)
     response = None
-# create new nodes
-# link the new nodes it with id
-# return all links id has
     if request.method == 'GET':
         desired_length = 15
         node_id = str(ulid.new().int)[:desired_length]  # Generate a ULID
@@ -134,7 +145,7 @@ def create_an_link(id,content):
         new_node = Node(int(node_id), content, type='task')  # Use ULID instead of incremental ID
         graph_manager.add_node(new_node)
 
-        result = link(id,node_id)
+        result = link_b(id,node_id)
         print("thsi is result", result)
         # Get the graph data
         graphdata = graph_view_instance.get_graph_data()
